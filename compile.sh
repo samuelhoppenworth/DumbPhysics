@@ -1,0 +1,1 @@
+tsc --downlevelIteration Script.ts -outFile Website/script.js
