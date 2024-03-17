@@ -14,6 +14,7 @@ function mouseDownHandler(event: MouseEvent) {
 }
 
 function mouseUpHandler(event: MouseEvent) {
+
 }
 
 function mouseMoveHandler(event: MouseEvent) {
@@ -24,19 +25,23 @@ function mouseMoveHandler(event: MouseEvent) {
 let width = window.innerWidth * dpi
 let height = window.innerHeight * dpi
 canvas.width = width
-canvas.height = height * 0.75
-let detailFont = dpi == 2 ? "40px arial" : "20px arial"
+canvas.height = height
+console.log("hi: ")
+let engine = new SimulatorEngine()
+engine.addItem(new Ball())
+engine.addItem(new Ball(Vector(20, 15), Vector(-2, 1), 5.0, 2))
+engine.addItem(new Ball(Vector(30, 15), Vector(1, 3), 5.0, 2))
+engine.addItem(new Ball(Vector(25, 12), Vector(-3, 0), 20.0, 4))
+// engine.addItem(new Ball(Vector(10, 10), Vector(1, 5), 5.0, 2))
+// engine.addItem(new Ball(Vector(5, 5), Vector(1, 5), 5.0, 2))
+// engine.gravity = false
 
-
+let renderer = new Renderer(engine, 50, Vector(-5, 25), ctx)
 function draw() {
-  let width = window.innerWidth * dpi
-  let height = window.innerHeight * dpi
-  ctx.lineWidth = this.lineWidth
-  ctx.beginPath()
-  ctx.ellipse(100, 100, 100, 100, 0, 0, 2*Math.PI)
-  ctx.fill()
-  ctx.closePath()
-  requestAnimationFrame(draw)
   
+  renderer.render()
+  engine.step()
+  requestAnimationFrame(draw)
+  // setTimeout(() => requestAnimationFrame(draw), 100)
 }
-requestAnimationFrame(draw)
+draw()
