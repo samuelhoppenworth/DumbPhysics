@@ -1,10 +1,13 @@
 class SimulatorEngine {
+  static bigG: number = 6.674e-11
+
   private items: Array<Item & Collidable> = []
   private collisionFlags: Array<boolean> = []
-  timestep: number = 0.0967
+  timestep: number = 0.1967
   gravity: boolean = true
-  boxWidth: number = 50
-  boxHeight: number = 20
+  attraction: boolean = false
+  boxWidth: number = 500
+  boxHeight: number = 200
 
   step() {
     // move them forward
@@ -12,7 +15,6 @@ class SimulatorEngine {
       this.collisionFlags[i] = false
       let item = this.items[i]
       item.position = add(item.position, scale(item.velocity, this.timestep))
-      console.log("item.position: ", item.position)
     }
     this.processAllCollisions()
     // apply forces and collisions
@@ -21,7 +23,6 @@ class SimulatorEngine {
       if (this.collisionFlags[i]) {
         continue
       }
-      console.log("YAYYY")
       let item = this.items[i]
       let force = this.resolveForce(item)
       let acceleration = scale(force, 1/item.mass)
@@ -98,11 +99,28 @@ class SimulatorEngine {
   }
 
   private resolveForce(item: Item): Vector {
+    let netForce: Vector = Vector(0, 0)
     if (this.gravity) {
-      return Vector(0, -item.mass)
+      netForce = Vector(0, -item.mass)
     } else {
-      return Vector(0, 0)
+      netForce = Vector(0, 0)
     }
+    if (this.attraction) {
+      netForce = add(netForce, this.resolveAttraction(item))
+    }
+    return netForce
+  }
+
+  private resolveAttraction(item: Item): Vector {
+    let attractiveForce: Vector = Vector(0, 0)
+    for (let other of this.items) {
+      if (other == item) continue
+      let diff = sub(other.position, item.position)
+      let dist = Math.sqrt(magSq(diff))
+      let strength = SimulatorEngine.bigG * item.mass * other.mass / (dist * dist * dist)
+      attractiveForce = add(attractiveForce, scale(diff,  strength))
+    }
+    return attractiveForce
   }
 
 }

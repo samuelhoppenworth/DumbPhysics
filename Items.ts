@@ -21,18 +21,21 @@ class Ball implements Item, Collidable {
   position: Vector
   mass: number
   radius: number
+  color: string
 
-  constructor(position: Vector = Vector(6, 6), velocity: Vector = Vector(2, 3), mass: number = 5.0, radius: number = 2) {
+  constructor(position: Vector = Vector(6, 6), velocity: Vector = Vector(2, 3), mass: number = 5.0, radius: number = 2, color: string = "black") {
     this.position = position
     this.velocity = velocity
     this.mass = mass
     this.radius = radius
+    this.color = color
   }
 
   draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number) {
     ctx.beginPath()
     ctx.arc(center.x, center.y, this.radius * scale, 0, 2*Math.PI)
     ctx.closePath()
+    ctx.fillStyle = this.color
     ctx.fill()
   }
 

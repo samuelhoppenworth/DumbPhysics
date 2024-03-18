@@ -28,20 +28,20 @@ canvas.width = width
 canvas.height = height
 console.log("hi: ")
 let engine = new SimulatorEngine()
-engine.addItem(new Ball())
-engine.addItem(new Ball(Vector(20, 15), Vector(-2, 1), 5.0, 2))
-engine.addItem(new Ball(Vector(30, 15), Vector(1, 3), 5.0, 2))
-engine.addItem(new Ball(Vector(25, 12), Vector(-3, 0), 20.0, 4))
-// engine.addItem(new Ball(Vector(10, 10), Vector(1, 5), 5.0, 2))
-// engine.addItem(new Ball(Vector(5, 5), Vector(1, 5), 5.0, 2))
-// engine.gravity = false
+// engine.addItem(new Ball(Vector(20, 15), Vector(0, 0), 5.0, 2, "red"))
+// engine.addItem(new Ball(Vector(30, 15), Vector(0, 0), 5.0, 2, "green"))
+engine.addItem(new Ball(Vector(100, 150), Vector(-1.5, 1), 2e13, 10, "blue"))
+engine.addItem(new Ball(Vector(150, 100), Vector(4, 0), 1e13, 5, "red"))
+engine.addItem(new Ball(Vector(50, 100), Vector(-1, -2), 1e13, 5))
+// engine.addItem(new Ball(Vector(5, 5), Vector(0, 0), 5.0, 2))
+engine.gravity = false
+engine.attraction = true
 
-let renderer = new Renderer(engine, 50, Vector(-5, 25), ctx)
+let renderer = new Renderer(engine, 5, Vector(-5, 210), ctx)
 function draw() {
   
   renderer.render()
   engine.step()
   requestAnimationFrame(draw)
-  // setTimeout(() => requestAnimationFrame(draw), 100)
 }
 draw()

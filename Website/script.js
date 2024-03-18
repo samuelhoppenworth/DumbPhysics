@@ -30,20 +30,23 @@ function add(a, b) {
     return { x: a.x + b.x, y: a.y + b.y };
 }
 var Ball = /** @class */ (function () {
-    function Ball(position, velocity, mass, radius) {
+    function Ball(position, velocity, mass, radius, color) {
         if (position === void 0) { position = Vector(6, 6); }
         if (velocity === void 0) { velocity = Vector(2, 3); }
         if (mass === void 0) { mass = 5.0; }
         if (radius === void 0) { radius = 2; }
+        if (color === void 0) { color = "black"; }
         this.position = position;
         this.velocity = velocity;
         this.mass = mass;
         this.radius = radius;
+        this.color = color;
     }
     Ball.prototype.draw = function (ctx, center, scale) {
         ctx.beginPath();
         ctx.arc(center.x, center.y, this.radius * scale, 0, 2 * Math.PI);
         ctx.closePath();
+        ctx.fillStyle = this.color;
         ctx.fill();
     };
     Ball.prototype.intersectsSegment = function (p1, p2) {
@@ -73,10 +76,11 @@ var SimulatorEngine = /** @class */ (function () {
     function SimulatorEngine() {
         this.items = [];
         this.collisionFlags = [];
-        this.timestep = 0.0967;
+        this.timestep = 0.1967;
         this.gravity = true;
-        this.boxWidth = 50;
-        this.boxHeight = 20;
+        this.attraction = false;
+        this.boxWidth = 500;
+        this.boxHeight = 200;
     }
     SimulatorEngine.prototype.step = function () {
         // move them forward
@@ -84,7 +88,6 @@ var SimulatorEngine = /** @class */ (function () {
             this.collisionFlags[i] = false;
             var item = this.items[i];
             item.position = add(item.position, scale(item.velocity, this.timestep));
-            console.log("item.position: ", item.position);
         }
         this.processAllCollisions();
         // apply forces and collisions
@@ -93,7 +96,6 @@ var SimulatorEngine = /** @class */ (function () {
             if (this.collisionFlags[i]) {
                 continue;
             }
-            console.log("YAYYY");
             var item = this.items[i];
             var force = this.resolveForce(item);
             var acceleration = scale(force, 1 / item.mass);
@@ -169,13 +171,42 @@ var SimulatorEngine = /** @class */ (function () {
         }
     };
     SimulatorEngine.prototype.resolveForce = function (item) {
+        var netForce = Vector(0, 0);
         if (this.gravity) {
-            return Vector(0, -item.mass);
+            netForce = Vector(0, -item.mass);
         }
         else {
-            return Vector(0, 0);
+            netForce = Vector(0, 0);
         }
+        if (this.attraction) {
+            netForce = add(netForce, this.resolveAttraction(item));
+        }
+        return netForce;
     };
+    SimulatorEngine.prototype.resolveAttraction = function (item) {
+        var e_1, _a;
+        var attractiveForce = Vector(0, 0);
+        try {
+            for (var _b = __values(this.items), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var other = _c.value;
+                if (other == item)
+                    continue;
+                var diff = sub(other.position, item.position);
+                var dist = Math.sqrt(magSq(diff));
+                var strength = SimulatorEngine.bigG * item.mass * other.mass / (dist * dist * dist);
+                attractiveForce = add(attractiveForce, scale(diff, strength));
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return attractiveForce;
+    };
+    SimulatorEngine.bigG = 6.674e-11;
     return SimulatorEngine;
 }());
 var Renderer = /** @class */ (function () {
@@ -187,7 +218,7 @@ var Renderer = /** @class */ (function () {
         this.ctx = context;
     }
     Renderer.prototype.render = function () {
-        var e_1, _a;
+        var e_2, _a;
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         try {
             for (var _b = __values(this.engine.getItems()), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -195,12 +226,12 @@ var Renderer = /** @class */ (function () {
                 item.draw(ctx, this.translateToCanvasCoordinates(item.position), this.scale);
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
                 if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
-            finally { if (e_1) throw e_1.error; }
+            finally { if (e_2) throw e_2.error; }
         }
         this.drawBoundary();
     };
@@ -241,18 +272,18 @@ canvas.width = width;
 canvas.height = height;
 console.log("hi: ");
 var engine = new SimulatorEngine();
-engine.addItem(new Ball());
-engine.addItem(new Ball(Vector(20, 15), Vector(-2, 1), 5.0, 2));
-engine.addItem(new Ball(Vector(30, 15), Vector(1, 3), 5.0, 2));
-engine.addItem(new Ball(Vector(25, 12), Vector(-3, 0), 20.0, 4));
-// engine.addItem(new Ball(Vector(10, 10), Vector(1, 5), 5.0, 2))
-// engine.addItem(new Ball(Vector(5, 5), Vector(1, 5), 5.0, 2))
-// engine.gravity = false
-var renderer = new Renderer(engine, 50, Vector(-5, 25), ctx);
+// engine.addItem(new Ball(Vector(20, 15), Vector(0, 0), 5.0, 2, "red"))
+// engine.addItem(new Ball(Vector(30, 15), Vector(0, 0), 5.0, 2, "green"))
+engine.addItem(new Ball(Vector(100, 150), Vector(-1.5, 1), 2e13, 10, "blue"));
+engine.addItem(new Ball(Vector(150, 100), Vector(4, 0), 1e13, 5, "red"));
+engine.addItem(new Ball(Vector(50, 100), Vector(-1, -2), 1e13, 5));
+// engine.addItem(new Ball(Vector(5, 5), Vector(0, 0), 5.0, 2))
+engine.gravity = false;
+engine.attraction = true;
+var renderer = new Renderer(engine, 5, Vector(-5, 210), ctx);
 function draw() {
     renderer.render();
     engine.step();
     requestAnimationFrame(draw);
-    // setTimeout(() => requestAnimationFrame(draw), 100)
 }
 draw();
