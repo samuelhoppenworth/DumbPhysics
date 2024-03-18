@@ -1,1 +1,1 @@
-tsc --downlevelIteration Script.ts -outFile Website/script.js
+tsc --downlevelIteration Vector.ts Items.ts SimulatorEngine.ts Renderer.ts Script.ts -outFile Website/script.js
