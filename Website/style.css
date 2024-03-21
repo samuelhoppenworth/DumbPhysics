@@ -6,11 +6,12 @@ body {
 html { overflow-y: scroll; }
 
 canvas {
-  object-fit: contain;
-  border: 2px solid black;
-  width: 70%;
-  height: 10%;
+  /* object-fit: fill; */
+  /* border: 2px solid black; */
+  /* width: 75%; */
+  /* height: 10%; */
   margin: 10px;
+  box-sizing: border-box;
 }
 
 p {
@@ -21,6 +22,14 @@ h1 {
   margin: 0px;
   padding: 10px;
 }
+
+/* #canvas-container {
+  display: grid;
+  padding:10px;
+  border: 2px solid black;
+  width: 50%;
+  height: 500px;
+} */
 
 #controls-container {
   display: grid;
@@ -37,3 +46,6 @@ h1 {
   display: grid;
   grid-gap: 8px;
 }
+
+
+html, body {margin: 0; height: 100%; overflow: hidden}

@@ -3,10 +3,13 @@ interface Item {
   // this is assumed to the the position of the center of mass of the item
   position: Vector
   mass: number
+  selected: boolean
   // items are given the scale of the canvas and where their center should be.
   // They are not in charge of determining their position; the renderer is
   // NOTE: This should draw the item upside-down, since the canvas's y-axis is inverted
   draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number): void
+
+  containsPoint(pt: Vector): boolean
   
 }
 
@@ -22,6 +25,7 @@ class Ball implements Item, Collidable {
   mass: number
   radius: number
   color: string
+  selected: boolean = false
 
   constructor(position: Vector = Vector(6, 6), velocity: Vector = Vector(2, 3), mass: number = 5.0, radius: number = 2, color: string = "black") {
     this.position = position
@@ -37,6 +41,16 @@ class Ball implements Item, Collidable {
     ctx.closePath()
     ctx.fillStyle = this.color
     ctx.fill()
+    if (!this.selected) return
+    ctx.beginPath()
+    ctx.arc(center.x, center.y, this.radius * scale, 0, 2*Math.PI)
+    ctx.closePath()
+    ctx.strokeStyle = "blue"
+    ctx.stroke()
+  }
+
+  containsPoint(pt: Vector): boolean {
+    return magSq(sub(pt, this.position)) <= this.radius * this.radius
   }
 
   intersectsSegment(p1: Vector, p2: Vector): boolean {

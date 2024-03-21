@@ -45,21 +45,30 @@ class SimulatorEngine {
     let box10 = Vector(this.boxWidth, 0)
     let box11 = Vector(this.boxWidth, this.boxHeight)
     let collision = false
-    if (item.intersectsSegment(box00, box10)) {
-      if (item.velocity.y < 0) item.velocity.y *= -1
-      collision = true
+    if (item.intersectsSegment(box00, box10) || item.position.y < 0) {
+      if (item.velocity.y < 0) {
+        item.velocity.y *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box01, box11)) {
-      if (item.velocity.y > 0) item.velocity.y *= -1
-      collision = true
+    if (item.intersectsSegment(box01, box11) || item.position.y > this.boxHeight ) {
+      if (item.velocity.y > 0) {
+        item.velocity.y *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box00, box01)) {
-      if (item.velocity.x < 0) item.velocity.x *= -1
-      collision = true
+    if (item.intersectsSegment(box00, box01) || item.position.x < 0) {
+      if (item.velocity.x < 0) {
+        item.velocity.x *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box10, box11)) {
-      if (item.velocity.x > 0) item.velocity.x *= -1
-      collision = true
+    if (item.intersectsSegment(box10, box11) || item.position.x > this.boxWidth) {
+      console.log("Collision of", item["color"])
+      if (item.velocity.x > 0) {
+        item.velocity.x *= -1
+        collision = true
+      }
     }
     return collision
   }
