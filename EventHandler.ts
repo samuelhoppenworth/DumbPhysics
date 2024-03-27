@@ -69,8 +69,8 @@ class EventHandler {
   getCanvasPosition(clientCoords: Vector): Vector {
     let rect = this.canvas.getBoundingClientRect();
     return Vector(
-        (clientCoords.x - rect.left) / (rect.right - rect.left) * canvas.width,
-        (clientCoords.y - rect.top) / (rect.bottom - rect.top) * canvas.height
+        (clientCoords.x - rect.left) / (rect.right - rect.left) * this.canvas.width,
+        (clientCoords.y - rect.top) / (rect.bottom - rect.top) * this.canvas.height
     );
 }
 }

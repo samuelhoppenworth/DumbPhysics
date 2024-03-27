@@ -19,32 +19,6 @@ engine.attraction = true
 let renderer = new Renderer(engine, 2, Vector(-5, 210), canvas, ctx)
 let eventHandler = new EventHandler(document, renderer, engine, canvas)
 
-let playing = false
+let uiHandler = new UIHandler(canvas, engine, renderer, eventHandler)
 
-function togglePlay(button: HTMLButtonElement) {
-  playing = !playing
-  button.innerText = playing ? "⏸" : "⏵"
-  // button.innerText = playing ? "a" : "b"
-}
-
-function speedChange(slider: HTMLInputElement) {
-  let s = Number(slider.value)
-  engineRepetitions = Math.ceil(s / 100)
-  engine.timestep = 0.1967 * s / 100 / (engineRepetitions)
-  let speedLabel = document.getElementById("speedLabel")! as HTMLParagraphElement
-  speedLabel.innerText = "Speed: " + s + "%"
-}
-
-let engineRepetitions = 1
-
-function draw() {
-  
-  renderer.render()
-  if (playing) {
-    for (let i = 0; i < engineRepetitions; i++) {
-      engine.step()
-    }
-  }
-  requestAnimationFrame(draw)
-}
-draw()
+uiHandler.draw()
