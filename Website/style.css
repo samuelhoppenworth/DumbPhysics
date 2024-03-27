@@ -3,6 +3,32 @@ body {
   overflow: hidden;
 }
 
+#timeControls {
+  display: block;
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 2px solid black;
+}
+
+#timeControls > * {
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: x-large;
+}
+
+#speedLabel {
+  width: 130px;
+
+}
+
+#playpause {
+  width: 50px;
+  height: 50px;
+  font-size: xx-large;
+}
+
 html { overflow-y: scroll; }
 
 canvas {
@@ -30,6 +56,8 @@ h1 {
   width: 50%;
   height: 500px;
 } */
+
+
 
 #controls-container {
   display: grid;

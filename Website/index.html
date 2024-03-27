@@ -9,9 +9,12 @@
   </head>
   <body>
     <h1>DumbPhysics</h1>
-    <!-- <div id="canvas-container"> -->
     <canvas id="canvas"></canvas>
-    <!-- </div> -->
+    <div id="timeControls">
+      <button id="playpause" onclick="togglePlay(this)">⏵</button>
+      <p id="speedLabel">Speed: 100%</p>
+      <input type="range" oninput="speedChange(this)" min="1" max="500" value="100">
+    </div>
     <div id="controls-container">
       <div id="view-select"> 
         <h3>Select your view:</h3>

@@ -1,6 +1,8 @@
-class SimulatorEngine {
+class Constants {
   static bigG: number = 6.674e-11
+}
 
+class SimulatorEngine {
   private items: Array<Item & Collidable> = []
   private collisionFlags: Array<boolean> = []
   timestep: number = 0.1967
@@ -8,6 +10,7 @@ class SimulatorEngine {
   attraction: boolean = false
   boxWidth: number = 500
   boxHeight: number = 200
+  time: number = 0
 
   step() {
     // move them forward
@@ -28,6 +31,7 @@ class SimulatorEngine {
       let acceleration = scale(force, 1/item.mass)
       item.velocity = add(item.velocity, scale(acceleration, this.timestep))
     }
+    this.time += this.timestep
   }
 
   addItem(item: Item & Collidable) {
@@ -126,7 +130,7 @@ class SimulatorEngine {
       if (other == item) continue
       let diff = sub(other.position, item.position)
       let dist = Math.sqrt(magSq(diff))
-      let strength = SimulatorEngine.bigG * item.mass * other.mass / (dist * dist * dist)
+      let strength = Constants.bigG * item.mass * other.mass / (dist * dist * dist)
       attractiveForce = add(attractiveForce, scale(diff,  strength))
     }
     return attractiveForce
