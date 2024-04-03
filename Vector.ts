@@ -27,3 +27,6 @@ function sub(a: Vector, b: Vector): Vector {
 function add(a: Vector, b: Vector): Vector {
   return { x: a.x + b.x, y: a.y + b.y }
 }
+function cross(a: Vector, b: Vector): number {
+  return a.x * b.y - a.y * b.x
+}

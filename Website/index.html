@@ -10,44 +10,12 @@
   <body>
     <h1>DumbPhysics</h1>
     <canvas id="canvas"></canvas>
-    <div id="controls-container">
-      <div id="view-select"> 
-        <h3>Select your view:</h3>
-        <div id="view-button-container" class="button-container">
-          <button>Top down</button>
-          <button>Side (rotate 90 degrees)</button>
-          <button>Zoom</button>
-          <button>Free camera</button>
-        </div>
-      </div>
-      <div id="shape-select"> 
-        <h3>Shapes (to drag and drop):</h3>
-        <div id="shape-button-container" class="button-container">
-          <button>Cube</button>
-          <button>Sphere</button>
-          <button>Pyramid</button>
-          <button>Proton</button>
-        </div>
-      </div>
-      <div id="resistance-select"> 
-        <h3>Resistance:</h3>
-        <div id="resistance-button-container" class="button-container">
-          <button>Gravity</button>
-          <button>Floor (Y/N)</button>
-          <button>Floor Friction Coefficient</button>
-        </div>
-      </div>
-      <div id="property-edit"> 
-        <h3>Select an item to edit properties:</h3>
-        <div id="property-button-container" class="button-container">
-          <button>Friction coefficient</button>
-          <button>XY Velocity</button>
-          <button>YZ Velocity</button>
-          <button>Width</button>
-          <button>Height</button>
-          <button>Charge</button>
-        </div>
-      </div>
+    <div id="timeControls">
+      <button id="playpause" onclick="uiHandler.togglePlay(this)">⏵</button>
+      <p id="speedLabel">Ticks/Frame: </p>
+      <input id="speedInput", type="text" value="1.00">
+      <input id="speedSlider" type="range" oninput="uiHandler.speedChange(this)" min="-1" max="1" value="0" step="0.001">
+    </div>
     </div>
   </body>
 </html>

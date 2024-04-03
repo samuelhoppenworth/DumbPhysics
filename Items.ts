@@ -3,10 +3,13 @@ interface Item {
   // this is assumed to the the position of the center of mass of the item
   position: Vector
   mass: number
+  selected: boolean
   // items are given the scale of the canvas and where their center should be.
   // They are not in charge of determining their position; the renderer is
   // NOTE: This should draw the item upside-down, since the canvas's y-axis is inverted
   draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number): void
+
+  containsPoint(pt: Vector): boolean
   
 }
 
@@ -14,6 +17,20 @@ interface Collidable {
   // hopefully we'll be able to implement rigid body dynamics, in which case this method will be
   // much more important. For now, we only use it to detect collisions with the boundary.
   intersectsSegment(p1: Vector, p2: Vector): boolean
+  minRadius: number
+
+}
+
+function segmentsIntersect(p1: Vector, p2: Vector, p3: Vector, p4: Vector): boolean {
+  let v12 = sub(p1, p2)
+  let v34 = sub(p3, p4)
+  let v13 = sub(p1, p3)
+  let v14 = sub(p1, p4)
+  let cross1 = cross(v12, v13)
+  let cross2 = cross(v12, v14)
+  let cross3 = cross(v34, v13)
+  let cross4 = cross(v34, v14)
+  return cross1 * cross2 < 0 && cross3 * cross4 < 0
 }
 
 class Ball implements Item, Collidable {
@@ -22,6 +39,8 @@ class Ball implements Item, Collidable {
   mass: number
   radius: number
   color: string
+  selected: boolean = false
+  minRadius: number
 
   constructor(position: Vector = Vector(6, 6), velocity: Vector = Vector(2, 3), mass: number = 5.0, radius: number = 2, color: string = "black") {
     this.position = position
@@ -29,6 +48,7 @@ class Ball implements Item, Collidable {
     this.mass = mass
     this.radius = radius
     this.color = color
+    this.minRadius = radius
   }
 
   draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number) {
@@ -37,6 +57,17 @@ class Ball implements Item, Collidable {
     ctx.closePath()
     ctx.fillStyle = this.color
     ctx.fill()
+    if (!this.selected) return
+    ctx.lineWidth = 2 * scale
+    ctx.beginPath()
+    ctx.arc(center.x, center.y, this.radius * scale, 0, 2*Math.PI)
+    ctx.closePath()
+    ctx.strokeStyle = "blue"
+    ctx.stroke()
+  }
+
+  containsPoint(pt: Vector): boolean {
+    return magSq(sub(pt, this.position)) <= this.radius * this.radius
   }
 
   intersectsSegment(p1: Vector, p2: Vector): boolean {

@@ -1,6 +1,8 @@
-class SimulatorEngine {
+class Constants {
   static bigG: number = 6.674e-11
+}
 
+class SimulatorEngine {
   private items: Array<Item & Collidable> = []
   private collisionFlags: Array<boolean> = []
   timestep: number = 0.1967
@@ -8,6 +10,7 @@ class SimulatorEngine {
   attraction: boolean = false
   boxWidth: number = 500
   boxHeight: number = 200
+  time: number = 0
 
   step() {
     // move them forward
@@ -28,6 +31,7 @@ class SimulatorEngine {
       let acceleration = scale(force, 1/item.mass)
       item.velocity = add(item.velocity, scale(acceleration, this.timestep))
     }
+    this.time += this.timestep
   }
 
   addItem(item: Item & Collidable) {
@@ -45,21 +49,30 @@ class SimulatorEngine {
     let box10 = Vector(this.boxWidth, 0)
     let box11 = Vector(this.boxWidth, this.boxHeight)
     let collision = false
-    if (item.intersectsSegment(box00, box10)) {
-      if (item.velocity.y < 0) item.velocity.y *= -1
-      collision = true
+    if (item.intersectsSegment(box00, box10) || item.position.y < 0) {
+      if (item.velocity.y < 0) {
+        item.velocity.y *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box01, box11)) {
-      if (item.velocity.y > 0) item.velocity.y *= -1
-      collision = true
+    if (item.intersectsSegment(box01, box11) || item.position.y > this.boxHeight ) {
+      if (item.velocity.y > 0) {
+        item.velocity.y *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box00, box01)) {
-      if (item.velocity.x < 0) item.velocity.x *= -1
-      collision = true
+    if (item.intersectsSegment(box00, box01) || item.position.x < 0) {
+      if (item.velocity.x < 0) {
+        item.velocity.x *= -1
+        collision = true
+      }
     }
-    if (item.intersectsSegment(box10, box11)) {
-      if (item.velocity.x > 0) item.velocity.x *= -1
-      collision = true
+    if (item.intersectsSegment(box10, box11) || item.position.x > this.boxWidth) {
+      console.log("Collision of", item["color"])
+      if (item.velocity.x > 0) {
+        item.velocity.x *= -1
+        collision = true
+      }
     }
     return collision
   }
@@ -117,7 +130,7 @@ class SimulatorEngine {
       if (other == item) continue
       let diff = sub(other.position, item.position)
       let dist = Math.sqrt(magSq(diff))
-      let strength = SimulatorEngine.bigG * item.mass * other.mass / (dist * dist * dist)
+      let strength = Constants.bigG * item.mass * other.mass / (dist * dist * dist)
       attractiveForce = add(attractiveForce, scale(diff,  strength))
     }
     return attractiveForce
