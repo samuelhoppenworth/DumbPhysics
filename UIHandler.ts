@@ -8,6 +8,12 @@ class UIHandler {
   engineRepetitions: number
   queuedRepetitions: number
 
+  //HTML elements
+  speedSlider: HTMLInputElement
+  speedInput: HTMLInputElement
+  playPauseButton: HTMLButtonElement
+
+
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
     this.canvas = canvas
     this.engine = engine
@@ -16,13 +22,20 @@ class UIHandler {
     this.playing = false
     this.engineRepetitions = 1
     this.queuedRepetitions = 1
-    let textField = document.getElementById("speedInput")! as HTMLInputElement
-    textField.addEventListener("focusout", this.textFieldChange)
+
+    this.speedInput = document.getElementById("speedInput")! as HTMLInputElement
+    this.speedInput.addEventListener("focusout", this.textFieldChange)
+
+    this.speedSlider = document.getElementById("speedSlider")! as HTMLInputElement
+    this.speedSlider.addEventListener("input", this.speedChange)
+
+    this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement
+    this.playPauseButton.addEventListener("click", this.togglePlay)
   }
 
-  togglePlay(button: HTMLButtonElement) {
+  togglePlay = (evt: Event) => {
     this.playing = !this.playing
-    button.innerText = this.playing ? "⏸" : "⏵"
+    this.playPauseButton.innerText = this.playing ? "⏸" : "⏵"
   }
   
   getSpeed(x: number) {
@@ -43,22 +56,20 @@ class UIHandler {
     }
   }
 
-  speedChange(slider: HTMLInputElement) {
-    this.engineRepetitions = this.getSpeed(Number(slider.value))
-    let speedLabel = document.getElementById("speedInput")! as HTMLInputElement
-    speedLabel.value = this.engineRepetitions.toFixed(2)
+  speedChange = (evt: Event) => {
+    this.engineRepetitions = this.getSpeed(Number(this.speedSlider.value))
+    this.speedInput.value = this.engineRepetitions.toFixed(2)
   }
 
   textFieldChange = (evt: FocusEvent) => {
-    let textField = evt.target as HTMLInputElement
-    let value = Number.parseFloat(textField.value)
+    let value = Number.parseFloat(this.speedInput.value)
     if (Number.isNaN(value)) {
-      textField.value = this.engineRepetitions.toFixed(2)
+      this.speedInput.value = this.engineRepetitions.toFixed(2)
     } else {
       console.log("Value: ", value)
       this.engineRepetitions = value
-      let slider = document.getElementById("speedSlider")! as HTMLInputElement
-      slider.value = this.getSpeedInverse(value).toString()
+      this.speedInput.value = this.engineRepetitions.toFixed(2)
+      this.speedSlider.value = this.getSpeedInverse(value).toString()
     }
   }
 

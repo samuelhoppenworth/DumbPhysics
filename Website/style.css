@@ -6,6 +6,8 @@ body {
 #timeControls {
   display: block;
   border: 2px solid black;
+  height: 10%;
+  margin-top: 2.5%;
 }
 
 #timeControls > * {
@@ -22,8 +24,8 @@ body {
 
 #rendering {
   width: 70%;
-  height: 100%;
-  border: 1px solid blue;
+  height: 90%;
+  /* border: 1px solid blue; */
   margin: 10px;
 }
 
@@ -36,15 +38,12 @@ body {
 #canvasDiv {
   width: 100%;
   height: 80%;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 html { overflow-y: scroll; }
 
 canvas {
-  /* object-fit: fill; */
-  /* border: 2px solid black; */
-  /* width: 75%; */
   box-sizing: border-box;
 }
 
@@ -56,15 +55,6 @@ h1 {
   margin: 0px;
   padding: 10px;
 }
-
-/* #canvas-container {
-  display: grid;
-  padding:10px;
-  border: 2px solid black;
-  width: 50%;
-  height: 500px;
-} */
-
 
 
 #controls-container {
