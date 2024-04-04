@@ -5,8 +5,11 @@ ctx.scale(1, 1)
 //get the canvas, canvas context, and dpi
 let dpi = window.devicePixelRatio
 
-canvas.width = window.innerWidth * 0.7;
-canvas.height = window.innerHeight * 0.8;
+let renderingDiv = document.getElementById("canvasDiv")! as HTMLDivElement
+canvas.width = renderingDiv.clientWidth
+canvas.height = renderingDiv.clientHeight
+
+
 let engine = new SimulatorEngine()
 
 engine.addItem(new Ball(Vector(100, 150), Vector(-1.5, 1), 2e13, 10, "blue"))
