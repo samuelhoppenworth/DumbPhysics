@@ -25,8 +25,17 @@ body {
 #rendering {
   width: 70%;
   height: 90%;
+  float:left;
   /* border: 1px solid blue; */
   margin: 10px;
+}
+
+#editorMenu {
+  width: 25%;
+  height: 90%;
+  margin: 10px;
+  float: right;
+  border: 1px solid black;
 }
 
 #playpause {

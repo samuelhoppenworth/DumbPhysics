@@ -18,6 +18,9 @@ class SimulatorEngine {
       this.collisionFlags[i] = false
       let item = this.items[i]
       item.position = add(item.position, scale(item.velocity, this.timestep))
+      if (item instanceof RigidBody) {
+        item.angle += item.angularVelocity * this.timestep
+      }
     }
     this.processAllCollisions()
     // apply forces and collisions
