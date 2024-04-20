@@ -1,6 +1,7 @@
 /** Handles all of the webpage interactions (apart from zooming and panning), such as play/pause and adding buttons/objects */
 class UIHandler {
   canvas: HTMLCanvasElement
+  sidebarDiv: HTMLDivElement
   engine: SimulatorEngine
   renderer: Renderer
   eventHandler: EventHandler
@@ -12,6 +13,9 @@ class UIHandler {
   speedSlider: HTMLInputElement
   speedInput: HTMLInputElement
   playPauseButton: HTMLButtonElement
+
+  // Sidebar elements
+  sidebarElements: Array<SidebarElement> = []
 
 
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
@@ -31,6 +35,31 @@ class UIHandler {
 
     this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement
     this.playPauseButton.addEventListener("click", this.togglePlay)
+
+    this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
+
+    for (let item of this.engine.getItems()) {
+      this.sidebarElements.push(new SidebarElement(item, this.sidebarDiv))
+    }
+  }
+
+  addSidebarButton(item: Item & Collidable) {
+    let section = document.createElement("div")
+    let child1 = document.createElement("p")
+
+    child1.innerText = `Mass: ${item.mass}, Radius: ${item.minRadius}`
+    section.appendChild(child1)
+    let child2 = document.createElement("p")
+    child2.innerHTML = `Position: (${item.position.x}, ${item.position.y})`
+    section.appendChild(child2)
+    this.sidebarDiv.appendChild(section)
+  }
+
+  updateSidebar() {
+    let items = this.engine.getItems()
+    for (let i in items) {
+      this.sidebarElements[i].update(items[i])
+    }
   }
 
   togglePlay = (evt: Event) => {
@@ -83,6 +112,7 @@ class UIHandler {
         this.engine.step()
       }
       this.queuedRepetitions += this.engineRepetitions
+      this.updateSidebar()
     }
     requestAnimationFrame(this.draw)
   }
