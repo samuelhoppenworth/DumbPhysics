@@ -17,7 +17,6 @@ class UIHandler {
   // Sidebar elements
   sidebarElements: Array<SidebarElement> = []
 
-
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
     this.canvas = canvas
     this.engine = engine
@@ -39,7 +38,7 @@ class UIHandler {
     this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
 
     for (let item of this.engine.getItems()) {
-      this.sidebarElements.push(new SidebarElement(item, this.sidebarDiv))
+      this.sidebarElements.push(new SidebarElement(item, this.sidebarDiv, this.sidebarElements.length, this.engine))
     }
   }
 

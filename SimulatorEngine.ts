@@ -139,4 +139,24 @@ class SimulatorEngine {
     return attractiveForce
   }
 
+  editProperty(name: string, index: number, newValue: number) {
+    switch (name) {
+      case "mass":
+        this.items[index].mass = newValue;
+        break;
+      case "positionX":
+        this.items[index].position[0] = newValue;
+        break;
+      case "positionY":
+        this.items[index].position[1] = newValue;
+        break;
+      case "velocityX":
+        this.items[index].velocity[0] = newValue;
+        break;
+      case "velocityY":
+        this.items[index].velocity[1] = newValue;
+        break;  
+    } 
+  }
+
 }
