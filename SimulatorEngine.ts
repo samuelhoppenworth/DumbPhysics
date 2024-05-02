@@ -3,7 +3,8 @@ class Constants {
 }
 
 class SimulatorEngine {
-  private items: Array<Item & Collidable> = []
+  private items: Array<(Item & Collidable) | null> = []
+  private allItems: Array<Item & Collidable> = []
   private collisionFlags: Array<boolean> = []
   timestep: number = 0.1967
   gravity: boolean = true
@@ -15,8 +16,9 @@ class SimulatorEngine {
   step() {
     // move them forward
     for (let i in this.items) {
-      this.collisionFlags[i] = false
       let item = this.items[i]
+      if (item == null) continue
+      this.collisionFlags[i] = false
       item.position = add(item.position, scale(item.velocity, this.timestep))
       if (item instanceof RigidBody) {
         item.angle += item.angularVelocity * this.timestep
@@ -25,11 +27,11 @@ class SimulatorEngine {
     this.processAllCollisions()
     // apply forces and collisions
     for (let i in this.items) {
+      let item = this.items[i]
       // applying forces like gravity after collision has weird consequences, like a loss of conservation of energy.
-      if (this.collisionFlags[i]) {
+      if (item == null || this.collisionFlags[i]) {
         continue
       }
-      let item = this.items[i]
       let force = this.resolveForce(item)
       let acceleration = scale(force, 1/item.mass)
       item.velocity = add(item.velocity, scale(acceleration, this.timestep))
@@ -37,13 +39,35 @@ class SimulatorEngine {
     this.time += this.timestep
   }
 
-  addItem(item: Item & Collidable) {
+  removeItem(at: number) {
+    let item = this.items[at]
+    console.log("Item to remove: ", item)
+    this.items[at] = null
+    let idx = this.allItems.indexOf(item!)
+    this.allItems.splice(idx, 1)
+  }
+
+  addItem(item: Item & Collidable): number {
+    this.allItems.push(item)
+    for (let i in this.items) {
+      if (this.items[i] == null) {
+        this.items[i] = item
+        this.collisionFlags[i] = false
+        return Number(i)
+      }
+    }
     this.items.push(item)
     this.collisionFlags.push(false)
+    return this.items.length - 1
+  }
+
+  getItem(index: number): Item & Collidable {
+    if (this.items[index] == null) throw new Error("Item does not exist")
+    return this.items[index]!
   }
 
   getItems(): Array<Item & Collidable> {
-    return this.items
+    return this.allItems
   }
 
   private checkWallCollisions(item: Item & Collidable): boolean {
@@ -83,6 +107,7 @@ class SimulatorEngine {
   private processAllCollisions() {
     for (let i = 0; i < this.items.length; i++) {
       let item = this.items[i]
+      if (item == null) continue
       if (this.checkWallCollisions(item)) this.collisionFlags[i] = true
       for (let j = i + 1; j < this.items.length; j++) {
         let other = this.items[j]
@@ -130,7 +155,7 @@ class SimulatorEngine {
   private resolveAttraction(item: Item): Vector {
     let attractiveForce: Vector = Vector(0, 0)
     for (let other of this.items) {
-      if (other == item) continue
+      if (other == null || other == item) continue
       let diff = sub(other.position, item.position)
       let dist = Math.sqrt(magSq(diff))
       let strength = Constants.bigG * item.mass * other.mass / (dist * dist * dist)
@@ -140,22 +165,35 @@ class SimulatorEngine {
   }
 
   editProperty(name: string, index: number, newValue: number) {
+    let item = this.items[index]
+    if (item == null) {
+      console.error("Cannot edit property of null item")
+      return
+    }
     switch (name) {
       case "mass":
-        this.items[index].mass = newValue;
+        item.mass = newValue;
         break;
       case "positionX":
-        this.items[index].position[0] = newValue;
+        item.position.x = newValue;
         break;
       case "positionY":
-        this.items[index].position[1] = newValue;
+        item.position.y = newValue;
         break;
       case "velocityX":
-        this.items[index].velocity[0] = newValue;
+        item.velocity.x = newValue;
         break;
       case "velocityY":
-        this.items[index].velocity[1] = newValue;
+        item.velocity.y = newValue;
         break;  
+      case "radius":
+        if (item instanceof Ball) {
+          item.radius = newValue;
+          item.minRadius = newValue;
+        } else {
+          console.error("Cannot set radius of non-ball object")
+        }
+        break;
     } 
   }
 

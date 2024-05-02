@@ -37,28 +37,43 @@ class UIHandler {
 
     this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
 
-    for (let item of this.engine.getItems()) {
-      this.sidebarElements.push(new SidebarElement(item, this.sidebarDiv, this.sidebarElements.length, this.engine))
+    let titleDiv = document.createElement("div")
+    // Make an h2 with the title "editor" and a button to add an item
+    let title = document.createElement("h2")
+    title.innerText = "Editor"
+    title.style.display = "inline-block"
+    let addButton = document.createElement("button")
+    addButton.innerText = "Add Item"
+    addButton.style.display = "inline-block"
+    addButton.onclick = this.addItem
+
+    titleDiv.appendChild(title)
+    titleDiv.appendChild(addButton)
+    this.sidebarDiv.appendChild(titleDiv)
+    
+    for (let index in this.engine.getItems()) {
+      this.sidebarElements.push(new SidebarElement(this.sidebarDiv, Number(index), this.engine, this))
     }
+
   }
 
-  addSidebarButton(item: Item & Collidable) {
-    let section = document.createElement("div")
-    let child1 = document.createElement("p")
-
-    child1.innerText = `Mass: ${item.mass}, Radius: ${item.minRadius}`
-    section.appendChild(child1)
-    let child2 = document.createElement("p")
-    child2.innerHTML = `Position: (${item.position.x}, ${item.position.y})`
-    section.appendChild(child2)
-    this.sidebarDiv.appendChild(section)
+  addItem = () => {
+    let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "black")
+    let idx = this.engine.addItem(item)
+    this.sidebarElements.push(new SidebarElement(this.sidebarDiv, idx, this.engine, this))
   }
 
   updateSidebar() {
-    let items = this.engine.getItems()
-    for (let i in items) {
-      this.sidebarElements[i].update(items[i])
+    for (let element of this.sidebarElements) {
+      element.update()
     }
+  }
+
+  removeElement(e: SidebarElement) {
+    let idx = this.sidebarElements.indexOf(e)
+    // this.engine.removeItem(idx)
+    this.sidebarElements.splice(idx, 1)
+    console.log("New sidebar elements", this.sidebarElements)
   }
 
   togglePlay = (evt: Event) => {
