@@ -11,8 +11,8 @@ class SidebarElement {
   private massContainer: HTMLDivElement
   private massLabel: HTMLSpanElement
   private massInput: HTMLInputElement
-  private radiusContainer: HTMLDivElement
-  private radiusLabel: HTMLSpanElement
+  // private radiusContainer: HTMLDivElement
+  // private radiusLabel: HTMLSpanElement
   private radiusInput: HTMLInputElement
   private positionContainer: HTMLDivElement
   private positionLabel: HTMLSpanElement
@@ -33,71 +33,6 @@ class SidebarElement {
 
     let item = this.engine.getItem(this.index)
 
-    // Mass
-    this.massContainer = document.createElement("div")
-    this.massInput = document.createElement("input")
-    this.massInput.id = "massInput" + index.toString()
-    this.massInput.type = "number"
-    this.massInput.placeholder = item.mass.toFixed(2)
-    this.massInput.oninput = () => this.engine.editProperty("mass", this.index, Number(this.massInput.value))
-    this.massLabel = document.createElement("span")
-    this.massLabel.innerText = "Mass: "
-    this.massContainer.appendChild(this.massLabel)
-    this.massContainer.appendChild(this.massInput)
-
-    if (item instanceof Ball) {
-      // Radius
-      this.radiusContainer = document.createElement("div")
-      this.radiusInput = document.createElement("input")
-      this.radiusInput.id = "radiusInput" + index.toString()
-      this.radiusInput.type = "number"
-      this.radiusInput.placeholder = item.minRadius.toFixed(2)
-      this.radiusInput.oninput = () => this.engine.editProperty("radius", this.index, Number(this.radiusInput.value))
-      this.radiusLabel = document.createElement("p")
-      this.radiusLabel.innerText = "Radius: "
-      this.radiusLabel.style.display = "inline-block"
-      this.radiusLabel.style.marginLeft = "0px"
-      this.radiusLabel.style.padding = "0px"
-      this.radiusContainer.appendChild(this.radiusLabel)
-      this.radiusContainer.appendChild(this.radiusInput)
-    }
-
-    // Position
-    this.positionContainer = document.createElement("div")
-    this.positionInputX = document.createElement("input")
-    this.positionInputY = document.createElement("input")
-    this.positionInputX.type = "number"
-    this.positionInputY.type = "number"
-    this.positionInputX.id = "positionInputX" + index.toString()
-    this.positionInputY.id = "positionInputY" + index.toString()
-    this.positionInputX.placeholder = item.position.x.toFixed(2)
-    this.positionInputY.placeholder = item.position.y.toFixed(2)
-    this.positionInputX.oninput = () => this.engine.editProperty("positionX", this.index, Number(this.positionInputX.value))
-    this.positionInputY.oninput = () => this.engine.editProperty("positionY", this.index, Number(this.positionInputY.value))
-    this.positionLabel = document.createElement("span")
-    this.positionLabel.innerText = "Position (X, Y): "
-    this.positionContainer.appendChild(this.positionLabel)
-    this.positionContainer.appendChild(this.positionInputX)
-    this.positionContainer.appendChild(this.positionInputY)
-
-    // Velocity
-    this.velocityContainer = document.createElement("div")
-    this.velocityInputX = document.createElement("input")
-    this.velocityInputY  = document.createElement("input")
-    this.velocityInputX.type = "number"
-    this.velocityInputY.type = "number"
-    this.velocityInputX.id = "velocityInputX" + index.toString()
-    this.velocityInputY.id = "velocityInputY" + index.toString()
-    this.velocityInputX.placeholder = item.velocity.x.toFixed(2)
-    this.velocityInputY.placeholder = item.velocity.y.toFixed(2)
-    this.velocityInputX.oninput = () => this.engine.editProperty("velocityX", this.index, Number(this.velocityInputX.value))
-    this.velocityInputY.oninput = () => this.engine.editProperty("velocityY", this.index, Number(this.velocityInputY.value))
-    this.velocityLabel = document.createElement("span")
-    this.velocityLabel.innerText = "Velocity (X, Y): "
-    this.velocityContainer.appendChild(this.velocityLabel)
-    this.velocityContainer.appendChild(this.velocityInputX)
-    this.velocityContainer.appendChild(this.velocityInputY)
-
     // Thumbnail
     this.thumbnail = document.createElement("canvas")
     this.thumbnail.width = 60
@@ -115,16 +50,81 @@ class SidebarElement {
       this.handler.removeElement(this)
     }
 
-    // Append elements to sectionDiv
     this.sectionDiv.appendChild(this.thumbnail)
-    this.sectionDiv.appendChild(this.massContainer)
-    this.sectionDiv.appendChild(this.radiusContainer)
-    this.sectionDiv.appendChild(this.positionContainer)
-    this.sectionDiv.appendChild(this.velocityContainer)
     this.sectionDiv.appendChild(this.deleteButton)
+
+
+    // Mass
+    this.massInput = this.makeScalarInput("Mass: ", "mass")
+
+    if (item instanceof Ball) {
+      this.radiusInput = this.makeScalarInput("Radius: ", "radius")
+    }
+
+    let positionInputs = this.makeVectorInput("Position (X, Y): ", "position")
+    this.positionInputX = positionInputs[0]
+    this.positionInputY = positionInputs[1]
+
+    let velocityInputs = this.makeVectorInput("Velocity (X, Y): ", "velocity")
+    this.velocityInputX = velocityInputs[0]
+    this.velocityInputY = velocityInputs[1]
+
 
     // Append sectionDiv to parent
     parent.appendChild(this.sectionDiv)
+  }
+
+  /** Creates a scalar input that modified the specified field
+   * @param labelText the text to display next to the input
+   * @param property the property to modify
+   * @returns the input element
+   */
+  makeScalarInput(labelText: string, property: string) {
+    let item = this.engine.getItem(this.index)
+    let container = document.createElement("div")
+    let input = document.createElement("input")
+    input.type = "number"
+    input.placeholder = item.minRadius.toFixed(2)
+    input.oninput = () => this.engine.editProperty(property, this.index, Number(input.value))
+
+    let label = document.createElement("p")
+    label.innerText = labelText
+    label.style.display = "inline-block"
+    label.style.marginLeft = "0px"
+    label.style.padding = "0px"
+    container.appendChild(label)
+    container.appendChild(input)
+    this.sectionDiv.appendChild(container)
+    return input
+  }
+
+  /** Creates a scalar input that modified the specified field
+   * @param labelText the text to display next to the input (wihout the X or Y suffix)
+   * @param property the property to modify
+   * @returns a pair of input elements; the x and y inputs
+   */
+  makeVectorInput(labelText: string, property: string) {
+    let item = this.engine.getItem(this.index)
+    let container = document.createElement("div")
+    let inputX = document.createElement("input")
+    let inputY = document.createElement("input")
+    inputX.type = "number"
+    inputY.type = "number"
+    inputX.placeholder = item.position.x.toFixed(2)
+    inputY.placeholder = item.position.y.toFixed(2)
+    inputX.oninput = () => this.engine.editProperty(property + "X", this.index, Number(inputX.value))
+    inputY.oninput = () => this.engine.editProperty(property + "Y", this.index, Number(inputY.value))
+
+    let label = document.createElement("p")
+    label.innerText = labelText
+    label.style.display = "inline-block"
+    label.style.marginLeft = "0px"
+    label.style.padding = "0px"
+    container.appendChild(label)
+    container.appendChild(inputX)
+    container.appendChild(inputY)
+    this.sectionDiv.appendChild(container)
+    return [inputX, inputY]
   }
 
   drawThumbnail(item: Item & Collidable) {
@@ -142,8 +142,6 @@ class SidebarElement {
     this.positionInputY.placeholder = item.position.y.toFixed(2)
     this.velocityInputX.placeholder = item.velocity.x.toFixed(2)
     this.velocityInputY.placeholder = item.velocity.y.toFixed(2)
-    // this.radiusInput.value = item.minRadius.toFixed(2)
-    // this.massInput.value = item.mass.toFixed(2)
     this.positionInputX.value = item.position.x.toFixed(2)
     this.positionInputY.value = item.position.y.toFixed(2)
     this.velocityInputX.value = item.velocity.x.toFixed(2)
