@@ -5,6 +5,7 @@ What is DumbPhysics
 For more details, please refer to our project proposal here.
 
 Technical Architecture:
+
 <img width="597" alt="Screenshot 2024-05-03 at 12 58 39 PM" src="https://github.com/CS222-UIUC-SP24/group-project-team-69/assets/46136202/b0118c0b-c8b4-4ef5-b32d-82347377e37d">
 
 
