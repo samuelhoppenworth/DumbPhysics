@@ -164,32 +164,38 @@ class SimulatorEngine {
     return attractiveForce
   }
 
-  editProperty(name: string, index: number, newValue: number) {
+  editProperty(name: string, index: number, newValue: string) {
     let item = this.items[index]
+    let newNum = Number(newValue)
     if (item == null) {
       console.error("Cannot edit property of null item")
       return
     }
     switch (name) {
       case "mass":
-        item.mass = newValue;
+        item.mass = newNum;
         break;
       case "positionX":
-        item.position.x = newValue;
+        item.position.x = newNum;
         break;
       case "positionY":
-        item.position.y = newValue;
+        item.position.y = newNum;
         break;
       case "velocityX":
-        item.velocity.x = newValue;
+        item.velocity.x = newNum;
         break;
       case "velocityY":
-        item.velocity.y = newValue;
+        item.velocity.y = newNum;
         break;  
+      case "color":
+        if (item instanceof RigidBody || item instanceof Ball) {
+          item.color = newValue;
+        }
+        break;
       case "radius":
         if (item instanceof Ball) {
-          item.radius = newValue;
-          item.minRadius = newValue;
+          item.radius = newNum;
+          item.minRadius = newNum;
         } else {
           console.error("Cannot set radius of non-ball object")
         }

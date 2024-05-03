@@ -13,8 +13,8 @@ canvas.height = renderingDiv.clientHeight
 let engine = new SimulatorEngine()
 
 // engine.addItem(new Ball(Vector(100, 150), Vector(-1.5, 1), 2e13, 10, "blue"))
-engine.addItem(new Ball(Vector(150, 100), Vector(20, 0), 5, 5, "red"))
-engine.addItem(new Ball(Vector(200, 100), Vector(-20, 0), 5, 5, "blue"))
+engine.addItem(new Ball(Vector(150, 100), Vector(20, 0), 5, 5, "#FF0000"))
+engine.addItem(new Ball(Vector(200, 100), Vector(-20, 0), 5, 5, "#0000FF"))
 // engine.addItem(new Ball(Vector(100, 50), Vector(-20, 0), 1e13, 5, "red"))
 // engine.addItem(new Ball(Vector(100, 100), Vector(20, 0), 1e13, 5, "red"))
 

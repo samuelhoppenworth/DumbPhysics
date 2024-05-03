@@ -9,14 +9,15 @@ class SidebarElement {
   private sectionDiv: HTMLDivElement
   private deleteButton: HTMLButtonElement
   private massInput: HTMLInputElement
-  // private radiusContainer: HTMLDivElement
-  // private radiusLabel: HTMLSpanElement
   private radiusInput: HTMLInputElement
   private positionInputX: HTMLInputElement
   private positionInputY: HTMLInputElement
   private velocityInputX: HTMLInputElement
   private velocityInputY: HTMLInputElement
   private thumbnail: HTMLCanvasElement
+  private colorInput: HTMLInputElement
+
+  private thumbnailWidth: number = 60
 
   constructor(parent: HTMLDivElement, index: number, engine: SimulatorEngine, handler: UIHandler) {
     this.handler = handler
@@ -27,12 +28,26 @@ class SidebarElement {
 
     let item = this.engine.getItem(this.index)
 
+    let header = document.createElement("div")
+
     // Thumbnail
     this.thumbnail = document.createElement("canvas")
-    this.thumbnail.width = 60
-    this.thumbnail.height = 60
+    this.thumbnail.width = this.thumbnailWidth
+    this.thumbnail.height = this.thumbnailWidth
     this.thumbnail.style.border = "1px solid black"
+    this.thumbnail.style.display = "inline-block"
     this.drawThumbnail(item)
+
+    // Color input
+    if (item instanceof Ball || item instanceof RigidBody) {
+      this.colorInput = document.createElement("input")
+      this.colorInput.type = "color"
+      this.colorInput.value = item.color
+      this.colorInput.oninput = () => {
+        this.engine.editProperty("color", this.index, this.colorInput.value)
+        this.drawThumbnail(item)
+      }
+    }
 
     // Delete button
     this.deleteButton = document.createElement("button")
@@ -43,9 +58,16 @@ class SidebarElement {
       console.log("Killing ", this)
       this.handler.removeElement(this)
     }
+    // this.deleteButton.style.width = String(this.thumbnailWidth) + "px"
+    // this.deleteButton.style.height = String(this.thumbnailWidth) + "px"
+    this.deleteButton.style.display = "inline-block"
+    this.deleteButton.style.marginTop = "0px"
 
-    this.sectionDiv.appendChild(this.thumbnail)
-    this.sectionDiv.appendChild(this.deleteButton)
+    header.appendChild(this.thumbnail)
+    header.appendChild(this.deleteButton)
+    header.appendChild(this.colorInput)
+
+    this.sectionDiv.appendChild(header)
 
 
     // Mass
@@ -79,7 +101,7 @@ class SidebarElement {
     let input = document.createElement("input")
     input.type = "number"
     input.placeholder = item.minRadius.toFixed(2)
-    input.oninput = () => this.engine.editProperty(property, this.index, Number(input.value))
+    input.oninput = () => this.engine.editProperty(property, this.index, input.value)
 
     let label = document.createElement("p")
     label.innerText = labelText
@@ -106,8 +128,8 @@ class SidebarElement {
     inputY.type = "number"
     inputX.placeholder = item.position.x.toFixed(2)
     inputY.placeholder = item.position.y.toFixed(2)
-    inputX.oninput = () => this.engine.editProperty(property + "X", this.index, Number(inputX.value))
-    inputY.oninput = () => this.engine.editProperty(property + "Y", this.index, Number(inputY.value))
+    inputX.oninput = () => this.engine.editProperty(property + "X", this.index, inputX.value)
+    inputY.oninput = () => this.engine.editProperty(property + "Y", this.index, inputY.value)
 
     let label = document.createElement("p")
     label.innerText = labelText

@@ -58,7 +58,7 @@ class UIHandler {
   }
 
   addItem = () => {
-    let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "black")
+    let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "#000000")
     let idx = this.engine.addItem(item)
     this.sidebarElements.push(new SidebarElement(this.sidebarDiv, idx, this.engine, this))
   }
