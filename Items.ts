@@ -10,7 +10,15 @@ interface Item {
   draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number): void
 
   containsPoint(pt: Vector): boolean
-  
+}
+
+interface Rotatable {
+  // angular velocity in radians per second
+  angularVelocity: number
+  // this is the angle in radians
+  angle: number
+  // this is the moment of inertia
+  I: number
 }
 
 interface Collidable {
@@ -18,19 +26,14 @@ interface Collidable {
   // much more important. For now, we only use it to detect collisions with the boundary.
   intersectsSegment(p1: Vector, p2: Vector): boolean
   minRadius: number
-
 }
 
-function segmentsIntersect(p1: Vector, p2: Vector, p3: Vector, p4: Vector): boolean {
-  let v12 = sub(p1, p2)
-  let v34 = sub(p3, p4)
-  let v13 = sub(p1, p3)
-  let v14 = sub(p1, p4)
-  let cross1 = cross(v12, v13)
-  let cross2 = cross(v12, v14)
-  let cross3 = cross(v34, v13)
-  let cross4 = cross(v34, v14)
-  return cross1 * cross2 < 0 && cross3 * cross4 < 0
+function ccw(A: Vector, B: Vector, C: Vector) {
+    return (C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x)
+}
+
+function segmentsIntersect(A: Vector ,B: Vector,C:Vector,D:Vector) {
+    return ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D)
 }
 
 class Ball implements Item, Collidable {
@@ -93,5 +96,73 @@ class Ball implements Item, Collidable {
     // the vector straight from the ball to the segment; the shortest distance.
     let altitudeVec = sub(rp1, projection1)
     return magSq(altitudeVec) <= radiusSq
+  }
+}
+
+class RigidBody implements Item, Collidable {
+  velocity: Vector
+  position: Vector
+  mass: number
+  selected: boolean
+  minRadius: number
+
+  // this is the angle in radians
+  angle: number
+  // this is the moment of inertia
+  I: number
+  // angular velocity in radians per second
+  angularVelocity: number
+  // the vertices of the polygon, in the local frame
+  vertices: Array<Vector>
+
+  // the color of the polygon
+  color: string
+
+  constructor(position: Vector = Vector(6, 6), velocity: Vector = Vector(2, 3), mass: number = 5.0, angle: number = 0, angularVelocity: number = 0, vertices: Array<Vector>, color: string = "black") {
+    this.position = position
+    this.velocity = velocity
+    this.mass = mass
+    this.angle = angle
+    this.angularVelocity = angularVelocity
+    this.vertices = vertices
+    this.color = color
+    
+    this.minRadius = 0
+    for (let vertex of vertices) {
+      let dist = magSq(vertex)
+      if (dist > this.minRadius) this.minRadius = dist
+    }
+    this.minRadius = Math.sqrt(this.minRadius)
+  }
+  draw(ctx: CanvasRenderingContext2D, center: Vector, scale: number): void {
+    ctx.moveTo(center.x + this.vertices[0].x * scale, center.y + this.vertices[0].y * scale)
+    ctx.beginPath()
+    for (let i = 0; i < this.vertices.length; i++) {
+      let worldVector = this.rotateVector(this.vertices[i], this.angle)
+      ctx.lineTo(center.x + worldVector.x * scale, center.y - worldVector.y * scale)
+    }
+    ctx.closePath()
+    ctx.fillStyle = this.color
+    ctx.fill()
+  }
+
+  rotateVector(v: Vector, theta: number): Vector {
+    let cosTheta = Math.cos(theta)
+    let sinTheta = Math.sin(theta)
+    return Vector(v.x * cosTheta - v.y * sinTheta, v.x * sinTheta + v.y * cosTheta)
+  }
+  
+
+  intersectsSegment(p1: Vector, p2: Vector): boolean {
+    for (let i = 0; i < this.vertices.length; i++) {
+      let j = (i + 1) % this.vertices.length
+      let vertex1 = this.rotateVector(this.vertices[i], this.angle)
+      let vertex2 = this.rotateVector(this.vertices[j], this.angle)
+      if (segmentsIntersect(add(vertex1, this.position), add(vertex2, this.position), p1, p2)) return true
+    }
+    return false
+  }
+  containsPoint(pt: Vector): boolean {
+    return false
   }
 }

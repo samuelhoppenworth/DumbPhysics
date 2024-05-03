@@ -1,12 +1,22 @@
 /** Handles all of the webpage interactions (apart from zooming and panning), such as play/pause and adding buttons/objects */
 class UIHandler {
   canvas: HTMLCanvasElement
+  sidebarDiv: HTMLDivElement
   engine: SimulatorEngine
   renderer: Renderer
   eventHandler: EventHandler
   playing: boolean
   engineRepetitions: number
   queuedRepetitions: number
+
+  //HTML elements
+  speedSlider: HTMLInputElement
+  speedInput: HTMLInputElement
+  playPauseButton: HTMLButtonElement
+
+  // Sidebar elements
+  sidebarElements: Array<SidebarElement> = []
+  itemsDiv: HTMLDivElement
 
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
     this.canvas = canvas
@@ -16,13 +26,67 @@ class UIHandler {
     this.playing = false
     this.engineRepetitions = 1
     this.queuedRepetitions = 1
-    let textField = document.getElementById("speedInput")! as HTMLInputElement
-    textField.addEventListener("focusout", this.textFieldChange)
+
+    this.speedInput = document.getElementById("speedInput")! as HTMLInputElement
+    this.speedInput.addEventListener("focusout", this.textFieldChange)
+
+    this.speedSlider = document.getElementById("speedSlider")! as HTMLInputElement
+    this.speedSlider.addEventListener("input", this.speedChange)
+
+    this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement
+    this.playPauseButton.addEventListener("click", this.togglePlay)
+
+    this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
+
+    let titleDiv = document.createElement("div")
+    // Make an h2 with the title "editor" and a button to add an item
+    let title = document.createElement("h2")
+    title.innerText = "Editor"
+    title.style.display = "inline-block"
+    let addButton = document.createElement("button")
+    addButton.innerText = "Add Item"
+    addButton.style.display = "inline-block"
+    addButton.onclick = this.addItem
+
+    titleDiv.appendChild(title)
+    titleDiv.appendChild(addButton)
+    this.sidebarDiv.appendChild(titleDiv)
+
+
+    this.itemsDiv = document.createElement("div")
+
+    this.sidebarDiv.appendChild(this.itemsDiv)
+    this.itemsDiv.style.overflow = "scroll"
+    // Have do to thing since percentages are specified relative to the parent's height, not the document's height
+    this.itemsDiv.style.height = String(document.body.clientHeight * 0.85) + "px"
+    
+    for (let index in this.engine.getItems()) {
+      this.sidebarElements.push(new SidebarElement(this.itemsDiv, Number(index), this.engine, this))
+    }
+
   }
 
-  togglePlay(button: HTMLButtonElement) {
+  addItem = () => {
+    let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "#000000")
+    let idx = this.engine.addItem(item)
+    this.sidebarElements.push(new SidebarElement(this.itemsDiv, idx, this.engine, this))
+  }
+
+  updateSidebar() {
+    for (let element of this.sidebarElements) {
+      element.update()
+    }
+  }
+
+  removeElement(e: SidebarElement) {
+    let idx = this.sidebarElements.indexOf(e)
+    this.sidebarElements.splice(idx, 1)
+    console.log("New sidebar elements", this.sidebarElements)
+  }
+
+  togglePlay = (evt: Event) => {
     this.playing = !this.playing
-    button.innerText = this.playing ? "⏸" : "⏵"
+    this.playPauseButton.innerText = this.playing ? "⏸" : "⏵"
   }
   
   getSpeed(x: number) {
@@ -43,22 +107,20 @@ class UIHandler {
     }
   }
 
-  speedChange(slider: HTMLInputElement) {
-    this.engineRepetitions = this.getSpeed(Number(slider.value))
-    let speedLabel = document.getElementById("speedInput")! as HTMLInputElement
-    speedLabel.value = this.engineRepetitions.toFixed(2)
+  speedChange = (evt: Event) => {
+    this.engineRepetitions = this.getSpeed(Number(this.speedSlider.value))
+    this.speedInput.value = this.engineRepetitions.toFixed(2)
   }
 
   textFieldChange = (evt: FocusEvent) => {
-    let textField = evt.target as HTMLInputElement
-    let value = Number.parseFloat(textField.value)
+    let value = Number.parseFloat(this.speedInput.value)
     if (Number.isNaN(value)) {
-      textField.value = this.engineRepetitions.toFixed(2)
+      this.speedInput.value = this.engineRepetitions.toFixed(2)
     } else {
       console.log("Value: ", value)
       this.engineRepetitions = value
-      let slider = document.getElementById("speedSlider")! as HTMLInputElement
-      slider.value = this.getSpeedInverse(value).toString()
+      this.speedInput.value = this.engineRepetitions.toFixed(2)
+      this.speedSlider.value = this.getSpeedInverse(value).toString()
     }
   }
 
@@ -72,6 +134,7 @@ class UIHandler {
         this.engine.step()
       }
       this.queuedRepetitions += this.engineRepetitions
+      this.updateSidebar()
     }
     requestAnimationFrame(this.draw)
   }

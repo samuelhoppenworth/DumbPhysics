@@ -5,10 +5,9 @@ body {
 
 #timeControls {
   display: block;
-  margin: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
   border: 2px solid black;
+  height: 10%;
+  margin-top: 2.5%;
 }
 
 #timeControls > * {
@@ -18,9 +17,25 @@ body {
   font-size: x-large;
 }
 
-#speedLabel {
-  /* width: 200px; */
 
+#speedInput {
+  width: 70px;
+}
+
+#rendering {
+  width: 70%;
+  height: 90%;
+  float:left;
+  /* border: 1px solid blue; */
+  margin: 10px;
+}
+
+#editorMenu {
+  width: 25%;
+  height: 90%;
+  margin: 10px;
+  float: right;
+  border: 1px solid black;
 }
 
 #playpause {
@@ -29,14 +44,15 @@ body {
   font-size: xx-large;
 }
 
+#canvasDiv {
+  width: 100%;
+  height: 80%;
+  /* border: 1px solid red; */
+}
+
 html { overflow-y: scroll; }
 
 canvas {
-  /* object-fit: fill; */
-  /* border: 2px solid black; */
-  /* width: 75%; */
-  /* height: 10%; */
-  margin: 10px;
   box-sizing: border-box;
 }
 
@@ -48,15 +64,6 @@ h1 {
   margin: 0px;
   padding: 10px;
 }
-
-/* #canvas-container {
-  display: grid;
-  padding:10px;
-  border: 2px solid black;
-  width: 50%;
-  height: 500px;
-} */
-
 
 
 #controls-container {
