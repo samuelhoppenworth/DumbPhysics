@@ -16,6 +16,7 @@ class UIHandler {
 
   // Sidebar elements
   sidebarElements: Array<SidebarElement> = []
+  itemsDiv: HTMLDivElement
 
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
     this.canvas = canvas
@@ -50,9 +51,17 @@ class UIHandler {
     titleDiv.appendChild(title)
     titleDiv.appendChild(addButton)
     this.sidebarDiv.appendChild(titleDiv)
+
+
+    this.itemsDiv = document.createElement("div")
+
+    this.sidebarDiv.appendChild(this.itemsDiv)
+    this.itemsDiv.style.overflow = "scroll"
+    // Have do to thing since percentages are specified relative to the parent's height, not the document's height
+    this.itemsDiv.style.height = String(document.body.clientHeight * 0.85) + "px"
     
     for (let index in this.engine.getItems()) {
-      this.sidebarElements.push(new SidebarElement(this.sidebarDiv, Number(index), this.engine, this))
+      this.sidebarElements.push(new SidebarElement(this.itemsDiv, Number(index), this.engine, this))
     }
 
   }
@@ -60,7 +69,7 @@ class UIHandler {
   addItem = () => {
     let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "#000000")
     let idx = this.engine.addItem(item)
-    this.sidebarElements.push(new SidebarElement(this.sidebarDiv, idx, this.engine, this))
+    this.sidebarElements.push(new SidebarElement(this.itemsDiv, idx, this.engine, this))
   }
 
   updateSidebar() {
@@ -71,7 +80,6 @@ class UIHandler {
 
   removeElement(e: SidebarElement) {
     let idx = this.sidebarElements.indexOf(e)
-    // this.engine.removeItem(idx)
     this.sidebarElements.splice(idx, 1)
     console.log("New sidebar elements", this.sidebarElements)
   }

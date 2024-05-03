@@ -152,7 +152,9 @@ class SidebarElement {
 
   update() {
     let item = this.engine.getItem(this.index)
-    this.radiusInput.placeholder = item.minRadius.toFixed(2)
+    if (item instanceof Ball) {
+      this.radiusInput.placeholder = item.minRadius.toFixed(2)
+    }
     this.massInput.placeholder = item.mass.toFixed(2)
     this.positionInputX.placeholder = item.position.x.toFixed(2)
     this.positionInputY.placeholder = item.position.y.toFixed(2)

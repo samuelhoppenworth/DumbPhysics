@@ -20,9 +20,23 @@ engine.addItem(new Ball(Vector(200, 100), Vector(-20, 0), 5, 5, "#0000FF"))
 
 // engine.addItem(new Ball(Vector(50, 100), Vector(-1, -2), 1e13, 5))
 // let vertices = [Vector(-5, -5), Vector(-5, 5), Vector(5, 5), Vector(5, -5)]
-// engine.addItem(new RigidBody(Vector(50, 50), Vector(5, 0), 1e13, 0.2, 0.4, vertices, "blue"))
+// engine.addItem(new RigidBody(Vector(50, 50), Vector(10, 0), 10, 0.2, 0.4, vertices, "#0000FF"))
+
+// vertices = [Vector(-5, -5), Vector(-5, 5), Vector(5, -5), Vector(0, 0)]
+// engine.addItem(new RigidBody(Vector(100, 50), Vector(5, 5), 10, -0.2, -0.4, vertices, "#00FF00"))
+
+// vertices = [Vector(-5, -5), Vector(-5, 5), Vector(5, 5), Vector(5, -5), Vector(25, 12), Vector(25, -12)]
+// engine.addItem(new RigidBody(Vector(50, 100), Vector(-5, -1), 10, 1, 5.4, vertices, "#FF0000"))
+
+// make shape with n vertices
+// vertices = []
+// let n = 10
+// for (let i = 0; i < n; i++) {
+//   vertices.push(Vector(10*Math.cos(i/n*2*Math.PI), 10*Math.sin(i/n*2*Math.PI)))
+// }
+// engine.addItem(new RigidBody(Vector(150, 150), Vector(1, -4), 10, 0.2, -0.1, vertices, "#000000"))
 // console.log((engine.getItems()[0] as RigidBody).angularVelocity)
-engine.gravity = true
+engine.gravity = false
 engine.attraction = true
 
 let renderer = new Renderer(engine, 2, Vector(-5, 210), canvas, ctx)
