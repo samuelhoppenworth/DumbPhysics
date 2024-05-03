@@ -8,18 +8,12 @@ class SidebarElement {
 
   private sectionDiv: HTMLDivElement
   private deleteButton: HTMLButtonElement
-  private massContainer: HTMLDivElement
-  private massLabel: HTMLSpanElement
   private massInput: HTMLInputElement
   // private radiusContainer: HTMLDivElement
   // private radiusLabel: HTMLSpanElement
   private radiusInput: HTMLInputElement
-  private positionContainer: HTMLDivElement
-  private positionLabel: HTMLSpanElement
   private positionInputX: HTMLInputElement
   private positionInputY: HTMLInputElement
-  private velocityContainer: HTMLDivElement
-  private velocityLabel: HTMLSpanElement
   private velocityInputX: HTMLInputElement
   private velocityInputY: HTMLInputElement
   private thumbnail: HTMLCanvasElement
