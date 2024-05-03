@@ -13,7 +13,7 @@ Technical Architecture:
 
 Developers:
   Navid: Developed overall framework 
-  Sam: Added functionality for editing properties and connected it to the sidebar element class. Implemented testing library
+  Sam: Added functionality for editing properties and connected it to the sidebar element class. Added gravity toggling. 
   Anuprova: Added functionality to connect user interface to simulation engine and graphics by adding buttons to add new items to the simulation. 
   Hozaifa: Added color functionality, debugging other errors
 
