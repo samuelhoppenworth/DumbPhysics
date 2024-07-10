@@ -1,0 +1,1 @@
+tsc --downlevelIteration --strictNullChecks Vector.ts Items.ts SimulatorEngine.ts Renderer.ts EventHandler.ts SidebarElement.ts UIHandler.ts Script.ts -outFile Website/script.js
