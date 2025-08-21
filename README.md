@@ -1,10 +1,15 @@
 # DumbPhysics
 
+
+
+
 ## What is DumbPhysics:
 
-DumbPhysics is a basic mechanics simulator that allows students to explore concepts taught in class through custom scenarios and simulations. Users are able to interact with the interface by adding new objects to the simulator and editing their properties. 
+DumbPhysics is a basic mechanics simulator that allows students to explore concepts taught in class through custom scenarios and simulations. Users are able to interact with the interface by adding new objects to the simulator and editing their properties.
+ 
 
-For more details, please refer to our project proposal [here](https://docs.google.com/document/d/1qe-q-af-iil4xxjf1D8c4RQvMHqV1Uxe-VX0hYsgTNs/edit?usp=sharing).
+<b><a href="https://dumb-physics.vercel.app/">Try DumbPhysics</a></b> – no download necessary.
+
 
 ## Technical Architecture:
 
@@ -13,19 +18,35 @@ For more details, please refer to our project proposal [here](https://docs.googl
 
 
 
-## Developers:
-
-- **Navid**: Developed overall framework 
-- **Sam**: Added functionality for editing properties and connected it to the sidebar element class. Added gravity toggling. 
-- **Anuprova**: Added functionality to connect user interface to simulation engine and graphics by adding buttons to add new items to the simulation. 
-- **Hozaifa**: Added color functionality, debugging other errors
 
 ## Environment Setup:
-	Brew install tsc // install typescript using your preferred package manager
-  Clone the repository
-  Compile with ```bash compile.sh```. Open the website with ```open Website/index.html```.
+1.  **Install Dependencies:**
+    Clone the repository and install the necessary development packages.
+    ```bash
+    git clone https://github.com/samuelhoppenworth/DumbPhysics.git
+    cd DumbPhysics
+    npm install
+    ```
+
+2.  **Build the Project:**
+    Compile the TypeScript source code and copy static files into a distributable `dist` folder.
+    ```bash
+    npm run build
+    ```
+
+3.  **Run the Local Server:**
+    Serve the contents of the `dist` folder using a local web server. This command will also automatically open the project in your default browser.
+    ```bash
+    npx live-server dist
+    ```
 	
 
+## Developers:
+
+- **Navid**: Developed overall framework.
+- **Sam**: Added object properties editing. Added gravity toggling. Deployed live link.
+- **Anuprova**: Added functionality to connect user interface to simulation engine and graphics by adding buttons to add new items to the simulation. 
+- **Hozaifa**: Added color functionality, debugging other errors
 
 
 
