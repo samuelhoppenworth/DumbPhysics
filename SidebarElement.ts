@@ -1,22 +1,23 @@
-class SidebarElement {
+import { SimulatorEngine } from "./SimulatorEngine.js";
+import { UIHandler } from "./UIHandler.js";
+import { Item, Collidable, Ball, RigidBody } from "./Items.js";
+import { Vector, createVector } from "./Vector.js";
+
+export class SidebarElement {
   private engine: SimulatorEngine
   index: number
-
   private parent: HTMLDivElement
-
   private handler: UIHandler
-
   private sectionDiv: HTMLDivElement
   private deleteButton: HTMLButtonElement
   private massInput: HTMLInputElement
-  private radiusInput: HTMLInputElement
+  private radiusInput!: HTMLInputElement; 
   private positionInputX: HTMLInputElement
   private positionInputY: HTMLInputElement
   private velocityInputX: HTMLInputElement
   private velocityInputY: HTMLInputElement
   private thumbnail: HTMLCanvasElement
-  private colorInput: HTMLInputElement
-
+  private colorInput!: HTMLInputElement;
   private thumbnailWidth: number = 60
 
   constructor(parent: HTMLDivElement, index: number, engine: SimulatorEngine, handler: UIHandler) {
@@ -25,12 +26,9 @@ class SidebarElement {
     this.engine = engine
     this.sectionDiv = document.createElement("div")
     this.parent = parent
-
     let item = this.engine.getItem(this.index)
-
     let header = document.createElement("div")
 
-    // Thumbnail
     this.thumbnail = document.createElement("canvas")
     this.thumbnail.width = this.thumbnailWidth
     this.thumbnail.height = this.thumbnailWidth
@@ -38,7 +36,6 @@ class SidebarElement {
     this.thumbnail.style.display = "inline-block"
     this.drawThumbnail(item)
 
-    // Color input
     if (item instanceof Ball || item instanceof RigidBody) {
       this.colorInput = document.createElement("input")
       this.colorInput.type = "color"
@@ -49,30 +46,25 @@ class SidebarElement {
       }
     }
 
-    // Delete button
     this.deleteButton = document.createElement("button")
     this.deleteButton.innerText = "Delete"
     this.deleteButton.onclick = () => {
       this.engine.removeItem(this.index)
       this.sectionDiv.remove()
-      console.log("Killing ", this)
       this.handler.removeElement(this)
     }
-    // this.deleteButton.style.width = String(this.thumbnailWidth) + "px"
-    // this.deleteButton.style.height = String(this.thumbnailWidth) + "px"
     this.deleteButton.style.display = "inline-block"
     this.deleteButton.style.marginTop = "0px"
 
     header.appendChild(this.thumbnail)
     header.appendChild(this.deleteButton)
-    header.appendChild(this.colorInput)
+    if (this.colorInput) {
+        header.appendChild(this.colorInput)
+    }
 
     this.sectionDiv.appendChild(header)
-
-
-    // Mass
+    
     this.massInput = this.makeScalarInput("Mass: ", "mass")
-
     if (item instanceof Ball) {
       this.radiusInput = this.makeScalarInput("Radius: ", "radius")
     }
@@ -85,24 +77,16 @@ class SidebarElement {
     this.velocityInputX = velocityInputs[0]
     this.velocityInputY = velocityInputs[1]
 
-
-    // Append sectionDiv to parent
     parent.appendChild(this.sectionDiv)
   }
 
-  /** Creates a scalar input that modified the specified field
-   * @param labelText the text to display next to the input
-   * @param property the property to modify
-   * @returns the input element
-   */
-  makeScalarInput(labelText: string, property: string) {
+  makeScalarInput(labelText: string, property: string): HTMLInputElement {
     let item = this.engine.getItem(this.index)
     let container = document.createElement("div")
     let input = document.createElement("input")
     input.type = "number"
     input.placeholder = item.minRadius.toFixed(2)
     input.oninput = () => this.engine.editProperty(property, this.index, input.value)
-
     let label = document.createElement("p")
     label.innerText = labelText
     label.style.display = "inline-block"
@@ -114,12 +98,7 @@ class SidebarElement {
     return input
   }
 
-  /** Creates a scalar input that modified the specified field
-   * @param labelText the text to display next to the input (wihout the X or Y suffix)
-   * @param property the property to modify
-   * @returns a pair of input elements; the x and y inputs
-   */
-  makeVectorInput(labelText: string, property: string) {
+  makeVectorInput(labelText: string, property: string): [HTMLInputElement, HTMLInputElement] {
     let item = this.engine.getItem(this.index)
     let container = document.createElement("div")
     let inputX = document.createElement("input")
@@ -130,7 +109,6 @@ class SidebarElement {
     inputY.placeholder = item.position.y.toFixed(2)
     inputX.oninput = () => this.engine.editProperty(property + "X", this.index, inputX.value)
     inputY.oninput = () => this.engine.editProperty(property + "Y", this.index, inputY.value)
-
     let label = document.createElement("p")
     label.innerText = labelText
     label.style.display = "inline-block"
@@ -147,7 +125,7 @@ class SidebarElement {
     let ctx = this.thumbnail.getContext("2d")!
     ctx.clearRect(0, 0, this.thumbnail.width, this.thumbnail.height)
     let itemScale = 25 / item.minRadius
-    item.draw(ctx, Vector(30, 30), itemScale)
+    item.draw(ctx, createVector(30, 30), itemScale)
   }
 
   update() {
@@ -164,7 +142,6 @@ class SidebarElement {
     this.positionInputY.value = item.position.y.toFixed(2)
     this.velocityInputX.value = item.velocity.x.toFixed(2)
     this.velocityInputY.value = item.velocity.y.toFixed(2)
-
     this.drawThumbnail(item)
   }
 }

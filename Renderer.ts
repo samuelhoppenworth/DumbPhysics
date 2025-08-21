@@ -1,16 +1,12 @@
-class Renderer {
+import { SimulatorEngine } from "./SimulatorEngine.js";
+import { Vector, createVector, sub, scale, add } from "./Vector.js";
+
+export class Renderer {
   engine: SimulatorEngine
-  /** the rendering scale in pixels/meter */
   scale: number
-
-  /** Offset (in meters) of the Canvas's origin (at the top left) from the simulation origin */
   originOffset: Vector
-
   private ctx: CanvasRenderingContext2D
-
   private canvas: HTMLCanvasElement
-
-  /** time when simulation started in milliseconds*/
   startTime: number
 
   constructor(eng: SimulatorEngine, sc: number, originO: Vector, canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
@@ -19,8 +15,8 @@ class Renderer {
     this.originOffset = originO
     this.canvas = canvas
     this.ctx = context
+    this.startTime = performance.now()
   }
-
 
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
@@ -30,8 +26,6 @@ class Renderer {
     this.drawBoundary()
     this.drawCanvasBoundary()
   }
-
-
 
   translateToCanvasCoordinates(p: Vector): Vector {
     let framePositionMeters = sub(p, this.originOffset)
@@ -53,7 +47,7 @@ class Renderer {
 
   private drawBoundary() {
     this.ctx.strokeStyle = "black"
-    let origin = this.translateToCanvasCoordinates(Vector(0, this.engine.boxHeight))
+    let origin = this.translateToCanvasCoordinates(createVector(0, this.engine.boxHeight))
     let width = this.engine.boxWidth * this.scale
     let height = this.engine.boxHeight * this.scale
     this.ctx.lineWidth = this.scale

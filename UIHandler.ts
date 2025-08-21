@@ -1,5 +1,12 @@
-/** Handles all of the webpage interactions (apart from zooming and panning), such as play/pause and adding buttons/objects */
-class UIHandler {
+// FIX: Added .js extensions
+import { SimulatorEngine } from "./SimulatorEngine.js";
+import { Renderer } from "./Renderer.js";
+import { EventHandler } from "./EventHandler.js";
+import { SidebarElement } from "./SidebarElement.js";
+import { Ball } from "./Items.js";
+import { createVector } from "./Vector.js";
+
+export class UIHandler {
   canvas: HTMLCanvasElement
   sidebarDiv: HTMLDivElement
   engine: SimulatorEngine
@@ -8,13 +15,9 @@ class UIHandler {
   playing: boolean
   engineRepetitions: number
   queuedRepetitions: number
-
-  //HTML elements
   speedSlider: HTMLInputElement
   speedInput: HTMLInputElement
   playPauseButton: HTMLButtonElement
-
-  // Sidebar elements
   sidebarElements: Array<SidebarElement> = []
   itemsDiv: HTMLDivElement
 
@@ -39,7 +42,6 @@ class UIHandler {
     this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
 
     let titleDiv = document.createElement("div")
-    // Make an h2 with the title "editor" and a button to add an item
     let title = document.createElement("h2")
     title.innerText = "Editor"
     title.style.display = "inline-block"
@@ -47,27 +49,22 @@ class UIHandler {
     addButton.innerText = "Add Item"
     addButton.style.display = "inline-block"
     addButton.onclick = this.addItem
-
     titleDiv.appendChild(title)
     titleDiv.appendChild(addButton)
     this.sidebarDiv.appendChild(titleDiv)
 
-
     this.itemsDiv = document.createElement("div")
-
     this.sidebarDiv.appendChild(this.itemsDiv)
     this.itemsDiv.style.overflow = "scroll"
-    // Have do to thing since percentages are specified relative to the parent's height, not the document's height
     this.itemsDiv.style.height = String(document.body.clientHeight * 0.85) + "px"
     
     for (let index in this.engine.getItems()) {
       this.sidebarElements.push(new SidebarElement(this.itemsDiv, Number(index), this.engine, this))
     }
-
   }
 
   addItem = () => {
-    let item = new Ball(Vector(6, 6), Vector(2, 3), 5.0, 5, "#000000")
+    let item = new Ball(createVector(6, 6), createVector(2, 3), 5.0, 5, "#000000")
     let idx = this.engine.addItem(item)
     this.sidebarElements.push(new SidebarElement(this.itemsDiv, idx, this.engine, this))
   }
@@ -81,7 +78,6 @@ class UIHandler {
   removeElement(e: SidebarElement) {
     let idx = this.sidebarElements.indexOf(e)
     this.sidebarElements.splice(idx, 1)
-    console.log("New sidebar elements", this.sidebarElements)
   }
 
   togglePlay = (evt: Event) => {
@@ -117,7 +113,6 @@ class UIHandler {
     if (Number.isNaN(value)) {
       this.speedInput.value = this.engineRepetitions.toFixed(2)
     } else {
-      console.log("Value: ", value)
       this.engineRepetitions = value
       this.speedInput.value = this.engineRepetitions.toFixed(2)
       this.speedSlider.value = this.getSpeedInverse(value).toString()
@@ -127,7 +122,6 @@ class UIHandler {
   draw = () => {
     this.renderer.render()
     if (this.playing) {
-      // Eventually we'll want to interpolate between frames when engineRepetitions < 1 to make it more smooth
       let n = Math.floor(this.queuedRepetitions)
       this.queuedRepetitions -= n
       for (let i = 0; i < n; i++) {

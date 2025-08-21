@@ -1,1 +1,3 @@
-tsc --downlevelIteration --strictNullChecks Vector.ts Items.ts SimulatorEngine.ts Renderer.ts EventHandler.ts SidebarElement.ts UIHandler.ts Script.ts -outFile Website/script.js
+#!/bin/bash
+tsc
+echo "Compilation finished. Run \"npx live-server Website\" to view"
