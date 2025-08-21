@@ -1,7 +1,7 @@
 import { Renderer } from "./Renderer.js";
-import { SimulatorEngine } from "./SimulatorEngine.js";
-import { Item } from "./Items.js";
-import { Vector, createVector, sub, add, scale } from "./Vector.js";
+import { Item } from "../simulator/Items.js";
+import { SimulatorEngine } from "../simulator/SimulatorEngine.js";
+import { Vector, add, createVector, scale, sub } from "../simulator/Vector.js";
 
 export class EventHandler {
   private renderer: Renderer

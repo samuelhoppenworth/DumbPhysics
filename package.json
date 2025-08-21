@@ -4,8 +4,9 @@
   "description": "DumbPhysics is a basic mechanics simulator that allows students to explore concepts taught in class through custom scenarios and simulations. Users are able to interact with the interface by adding new objects to the simulator and editing their properties.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "clean": "rimraf dist",
+    "copy-static": "copyfiles -u 1 public/**/* dist",
+    "build": "npm run clean && tsc && npm run copy-static"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
   },
   "homepage": "https://github.com/samuelhoppenworth/DumbPhysics#readme",
   "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "rimraf": "^6.0.1",
     "typescript": "^5.9.2"
   }
 }

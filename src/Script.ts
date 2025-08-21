@@ -1,10 +1,10 @@
-import { SimulatorEngine } from "./SimulatorEngine.js";
-import { Ball } from "./Items.js";
-import { Renderer } from "./Renderer.js";
-import { EventHandler } from "./EventHandler.js";
-import { UIHandler } from "./UIHandler.js";
+import { SimulatorEngine } from "./simulator/SimulatorEngine.js";
+import { Ball } from "./simulator/Items.js";
+import { Renderer } from "./ui/Renderer.js";
+import { EventHandler } from "./ui/EventHandler.js";
+import { UIHandler } from "./ui/UIHandler.js";
 // Use an alias to keep the `Vector()` syntax in this file
-import { createVector as Vector } from "./Vector.js";
+import { createVector as Vector } from "./simulator/Vector.js";
 
 let canvas: HTMLCanvasElement = document.getElementById("canvas")! as HTMLCanvasElement
 let ctx = canvas.getContext("2d")!

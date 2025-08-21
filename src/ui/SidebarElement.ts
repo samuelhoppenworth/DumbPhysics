@@ -1,8 +1,8 @@
-import { eventBus } from "./EventBus.js";
-import { SimulatorEngine } from "./SimulatorEngine.js";
+import { eventBus } from "../core/EventBus.js";
+import { SimulatorEngine } from "../simulator/SimulatorEngine.js";
 import { UIHandler } from "./UIHandler.js";
-import { Item, Collidable, Ball, RigidBody } from "./Items.js";
-import { Vector, createVector } from "./Vector.js";
+import { Item, Collidable, Ball, RigidBody } from "../simulator/Items.js";
+import { Vector, createVector } from "../simulator/Vector.js";
 
 export class SidebarElement {
   private engine: SimulatorEngine

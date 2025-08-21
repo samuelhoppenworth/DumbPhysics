@@ -1,5 +1,5 @@
-import { SimulatorEngine } from "./SimulatorEngine.js";
-import { Vector, createVector, sub, scale, add } from "./Vector.js";
+import { SimulatorEngine } from "../simulator/SimulatorEngine.js";
+import { Vector, createVector, sub, scale, add } from "../simulator/Vector.js";
 
 export class Renderer {
   engine: SimulatorEngine

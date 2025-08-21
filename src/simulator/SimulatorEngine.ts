@@ -1,4 +1,4 @@
-import { eventBus } from "./EventBus.js";
+import { eventBus } from "../core/EventBus.js";
 import { Item, Collidable, Ball, RigidBody } from "./Items.js";
 import { Vector, createVector, magSq, sub, add, dot, scale } from "./Vector.js";
 

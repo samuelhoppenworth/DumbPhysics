@@ -1,10 +1,10 @@
-import { eventBus } from "./EventBus.js";
-import { SimulatorEngine } from "./SimulatorEngine.js";
+import { eventBus } from "../core/EventBus.js";
+import { SimulatorEngine } from "../simulator/SimulatorEngine.js";
 import { Renderer } from "./Renderer.js";
 import { EventHandler } from "./EventHandler.js";
 import { SidebarElement } from "./SidebarElement.js";
-import { Ball } from "./Items.js";
-import { createVector } from "./Vector.js";
+import { Ball } from "../simulator/Items.js";
+import { createVector } from "../simulator/Vector.js";
 
 export class UIHandler {
   canvas: HTMLCanvasElement
