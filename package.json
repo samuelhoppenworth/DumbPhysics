@@ -1,0 +1,25 @@
+{
+  "name": "dumbphysics",
+  "version": "1.0.0",
+  "description": "DumbPhysics is a basic mechanics simulator that allows students to explore concepts taught in class through custom scenarios and simulations. Users are able to interact with the interface by adding new objects to the simulator and editing their properties.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelhoppenworth/DumbPhysics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/samuelhoppenworth/DumbPhysics/issues"
+  },
+  "homepage": "https://github.com/samuelhoppenworth/DumbPhysics#readme",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}
