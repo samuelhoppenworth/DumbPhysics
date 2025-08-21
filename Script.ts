@@ -1,3 +1,11 @@
+import { SimulatorEngine } from "./SimulatorEngine.js";
+import { Ball } from "./Items.js";
+import { Renderer } from "./Renderer.js";
+import { EventHandler } from "./EventHandler.js";
+import { UIHandler } from "./UIHandler.js";
+// Use an alias to keep the `Vector()` syntax in this file
+import { createVector as Vector } from "./Vector.js";
+
 let canvas: HTMLCanvasElement = document.getElementById("canvas")! as HTMLCanvasElement
 let ctx = canvas.getContext("2d")!
 console.log("context:", ctx)
@@ -8,7 +16,6 @@ let dpi = window.devicePixelRatio
 let renderingDiv = document.getElementById("canvasDiv")! as HTMLDivElement
 canvas.width = renderingDiv.clientWidth
 canvas.height = renderingDiv.clientHeight
-
 
 let engine = new SimulatorEngine()
 
