@@ -1,3 +1,4 @@
+import { eventBus } from "./EventBus.js";
 import { Item, Collidable, Ball, RigidBody } from "./Items.js";
 import { Vector, createVector, magSq, sub, add, dot, scale } from "./Vector.js";
 
@@ -15,6 +16,25 @@ export class SimulatorEngine {
   boxWidth: number = 500
   boxHeight: number = 200
   time: number = 0
+
+  constructor() {
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    eventBus.on('addItem', (itemToAdd: Item & Collidable) => {
+      const newIndex = this.addItem(itemToAdd);
+      eventBus.dispatch('itemAdded', { item: itemToAdd, index: newIndex });
+    });
+
+    eventBus.on('removeItem', (index: number) => {
+      this.removeItem(index);
+    });
+
+    eventBus.on('itemPropertyChanged', (data: { itemIndex: number; property: string; newValue: any }) => {
+      this.editProperty(data.property, data.itemIndex, data.newValue);
+    });
+  }
 
   step() {
     for (let i in this.items) {

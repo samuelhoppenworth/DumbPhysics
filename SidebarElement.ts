@@ -1,3 +1,4 @@
+import { eventBus } from "./EventBus.js";
 import { SimulatorEngine } from "./SimulatorEngine.js";
 import { UIHandler } from "./UIHandler.js";
 import { Item, Collidable, Ball, RigidBody } from "./Items.js";
@@ -26,6 +27,7 @@ export class SidebarElement {
     this.engine = engine
     this.sectionDiv = document.createElement("div")
     this.parent = parent
+
     let item = this.engine.getItem(this.index)
     let header = document.createElement("div")
 
@@ -40,16 +42,22 @@ export class SidebarElement {
       this.colorInput = document.createElement("input")
       this.colorInput.type = "color"
       this.colorInput.value = item.color
+
       this.colorInput.oninput = () => {
-        this.engine.editProperty("color", this.index, this.colorInput.value)
-        this.drawThumbnail(item)
+        eventBus.dispatch('itemPropertyChanged', {
+          itemIndex: this.index,
+          property: 'color',
+          newValue: this.colorInput.value
+        });
+        this.drawThumbnail(this.engine.getItem(this.index));
       }
     }
 
     this.deleteButton = document.createElement("button")
     this.deleteButton.innerText = "Delete"
+
     this.deleteButton.onclick = () => {
-      this.engine.removeItem(this.index)
+      eventBus.dispatch('removeItem', this.index);
       this.sectionDiv.remove()
       this.handler.removeElement(this)
     }
@@ -85,8 +93,14 @@ export class SidebarElement {
     let container = document.createElement("div")
     let input = document.createElement("input")
     input.type = "number"
-    input.placeholder = item.minRadius.toFixed(2)
-    input.oninput = () => this.engine.editProperty(property, this.index, input.value)
+    input.placeholder = (item as any)[property]?.toFixed(2) || item.minRadius.toFixed(2);
+
+    input.oninput = () => eventBus.dispatch('itemPropertyChanged', {
+      itemIndex: this.index,
+      property: property,
+      newValue: input.value
+    });
+
     let label = document.createElement("p")
     label.innerText = labelText
     label.style.display = "inline-block"
@@ -105,10 +119,20 @@ export class SidebarElement {
     let inputY = document.createElement("input")
     inputX.type = "number"
     inputY.type = "number"
-    inputX.placeholder = item.position.x.toFixed(2)
-    inputY.placeholder = item.position.y.toFixed(2)
-    inputX.oninput = () => this.engine.editProperty(property + "X", this.index, inputX.value)
-    inputY.oninput = () => this.engine.editProperty(property + "Y", this.index, inputY.value)
+    inputX.placeholder = (item as any)[property].x.toFixed(2)
+    inputY.placeholder = (item as any)[property].y.toFixed(2)
+
+    inputX.oninput = () => eventBus.dispatch('itemPropertyChanged', {
+      itemIndex: this.index,
+      property: `${property}X`,
+      newValue: inputX.value
+    });
+    inputY.oninput = () => eventBus.dispatch('itemPropertyChanged', {
+      itemIndex: this.index,
+      property: `${property}Y`,
+      newValue: inputY.value
+    });
+
     let label = document.createElement("p")
     label.innerText = labelText
     label.style.display = "inline-block"
@@ -142,6 +166,7 @@ export class SidebarElement {
     this.positionInputY.value = item.position.y.toFixed(2)
     this.velocityInputX.value = item.velocity.x.toFixed(2)
     this.velocityInputY.value = item.velocity.y.toFixed(2)
+
     this.drawThumbnail(item)
   }
 }

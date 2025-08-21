@@ -1,4 +1,4 @@
-// FIX: Added .js extensions
+import { eventBus } from "./EventBus.js";
 import { SimulatorEngine } from "./SimulatorEngine.js";
 import { Renderer } from "./Renderer.js";
 import { EventHandler } from "./EventHandler.js";
@@ -19,7 +19,7 @@ export class UIHandler {
   speedInput: HTMLInputElement
   playPauseButton: HTMLButtonElement
   sidebarElements: Array<SidebarElement> = []
-  itemsDiv: HTMLDivElement
+  itemsDiv!: HTMLDivElement
 
   constructor(canvas: HTMLCanvasElement, engine: SimulatorEngine, renderer: Renderer, eventHandler: EventHandler) {
     this.canvas = canvas
@@ -30,43 +30,58 @@ export class UIHandler {
     this.engineRepetitions = 1
     this.queuedRepetitions = 1
 
-    this.speedInput = document.getElementById("speedInput")! as HTMLInputElement
-    this.speedInput.addEventListener("focusout", this.textFieldChange)
+    // Setup UI listeners and create initial sidebar elements
+    this.speedInput = document.getElementById("speedInput")! as HTMLInputElement;
+    this.speedSlider = document.getElementById("speedSlider")! as HTMLInputElement;
+    this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement;
+    this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement;
 
-    this.speedSlider = document.getElementById("speedSlider")! as HTMLInputElement
-    this.speedSlider.addEventListener("input", this.speedChange)
+    this.setupUIListeners();
+    this.createInitialSidebarElements();
 
-    this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement
-    this.playPauseButton.addEventListener("click", this.togglePlay)
+    // Listen for events from the engine
+    this.setupEngineEventListeners();
+  }
 
-    this.sidebarDiv = document.getElementById("sidebar")! as HTMLDivElement
+  private setupUIListeners(): void {
+    this.speedInput.addEventListener("focusout", this.textFieldChange);
+    this.speedSlider.addEventListener("input", this.speedChange);
+    this.playPauseButton.addEventListener("click", this.togglePlay);
 
-    let titleDiv = document.createElement("div")
-    let title = document.createElement("h2")
-    title.innerText = "Editor"
-    title.style.display = "inline-block"
-    let addButton = document.createElement("button")
-    addButton.innerText = "Add Item"
-    addButton.style.display = "inline-block"
-    addButton.onclick = this.addItem
-    titleDiv.appendChild(title)
-    titleDiv.appendChild(addButton)
-    this.sidebarDiv.appendChild(titleDiv)
+    let titleDiv = document.createElement("div");
+    let title = document.createElement("h2");
+    title.innerText = "Editor";
+    title.style.display = "inline-block";
+    let addButton = document.createElement("button");
+    addButton.innerText = "Add Item";
+    addButton.style.display = "inline-block";
+    addButton.onclick = this.addItem;
+    titleDiv.appendChild(title);
+    titleDiv.appendChild(addButton);
+    this.sidebarDiv.appendChild(titleDiv);
 
-    this.itemsDiv = document.createElement("div")
-    this.sidebarDiv.appendChild(this.itemsDiv)
-    this.itemsDiv.style.overflow = "scroll"
-    this.itemsDiv.style.height = String(document.body.clientHeight * 0.85) + "px"
-    
-    for (let index in this.engine.getItems()) {
-      this.sidebarElements.push(new SidebarElement(this.itemsDiv, Number(index), this.engine, this))
+    this.itemsDiv = document.createElement("div");
+    this.sidebarDiv.appendChild(this.itemsDiv);
+    this.itemsDiv.style.overflow = "scroll";
+    this.itemsDiv.style.height = String(document.body.clientHeight * 0.85) + "px";
+  }
+
+  private createInitialSidebarElements(): void {
+    for (const item of this.engine.getItems()) {
+        const index = this.engine.getItems().indexOf(item);
+        this.sidebarElements.push(new SidebarElement(this.itemsDiv, index, this.engine, this));
     }
   }
 
+  private setupEngineEventListeners(): void {
+    eventBus.on('itemAdded', (data: { item: any; index: number }) => {
+      this.sidebarElements.push(new SidebarElement(this.itemsDiv, data.index, this.engine, this));
+    });
+  }
+
   addItem = () => {
-    let item = new Ball(createVector(6, 6), createVector(2, 3), 5.0, 5, "#000000")
-    let idx = this.engine.addItem(item)
-    this.sidebarElements.push(new SidebarElement(this.itemsDiv, idx, this.engine, this))
+    const newItem = new Ball(createVector(6, 6), createVector(2, 3), 5.0, 5, "#000000");
+    eventBus.dispatch('addItem', newItem);
   }
 
   updateSidebar() {
