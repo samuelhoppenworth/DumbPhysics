@@ -13,7 +13,7 @@ DumbPhysics is a basic mechanics simulator that allows students to explore conce
 
 ## Technical Architecture:
 
-<img width="597" alt="Screenshot 2024-05-03 at 12 58 39 PM" src="https://github.com/CS222-UIUC-SP24/group-project-team-69/assets/46136202/b0118c0b-c8b4-4ef5-b32d-82347377e37d">
+<img width="597" alt="Screenshot 2024-05-03 at 12 58 39 PM" src="https://github-production-user-asset-6210df.s3.amazonaws.com/46136202/327842213-b0118c0b-c8b4-4ef5-b32d-82347377e37d.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250821%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250821T023834Z&X-Amz-Expires=300&X-Amz-Signature=21dd639ac5172521e32ea2e7d71177be69b732cf2b6683b3fd5d2f540307c540&X-Amz-SignedHeaders=host">
 
 
 
