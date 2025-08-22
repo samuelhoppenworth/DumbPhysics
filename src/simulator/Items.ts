@@ -20,12 +20,12 @@ export interface Collidable {
   minRadius: number
 }
 
-export function ccw(A: Vector, B: Vector, C: Vector) {
+export function counterClockWise(A: Vector, B: Vector, C: Vector) {
     return (C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x)
 }
 
 export function segmentsIntersect(A: Vector ,B: Vector,C:Vector,D:Vector) {
-    return ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D)
+    return counterClockWise(A,C,D) != counterClockWise(B,C,D) && counterClockWise(A,B,C) != counterClockWise(A,B,D)
 }
 
 export class Ball implements Item, Collidable {
