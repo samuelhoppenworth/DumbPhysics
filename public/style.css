@@ -87,7 +87,6 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 
 #globalSettings {
   padding: 10px;
-  border-bottom: 1px solid #ccc;
 }
 
 #globalSettings label {
@@ -97,7 +96,6 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 /* New styles for the item creation form */
 #newItemForm {
   padding: 10px;
-  border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
