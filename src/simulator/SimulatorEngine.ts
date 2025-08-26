@@ -34,6 +34,14 @@ export class SimulatorEngine {
     eventBus.on('itemPropertyChanged', (data: { itemIndex: number; property: string; newValue: any }) => {
       this.editProperty(data.property, data.itemIndex, data.newValue);
     });
+
+    eventBus.on('gravityToggled', (value: boolean) => {
+        this.gravity = value;
+    });
+
+    eventBus.on('attractionToggled', (value: boolean) => {
+        this.attraction = value;
+    });
   }
 
   step() {

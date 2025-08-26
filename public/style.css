@@ -84,3 +84,47 @@ h1 {
 
 
 html, body {margin: 0; height: 100%; overflow: hidden}
+
+#globalSettings {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+#globalSettings label {
+  margin-right: 15px;
+}
+
+/* New styles for the item creation form */
+#newItemForm {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+#newItemForm h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#newItemForm div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+#newItemForm label {
+  margin-right: 10px;
+}
+
+#newItemForm input[type="number"] {
+  width: 60px;
+}
+
+#newItemForm input[type="color"] {
+  width: 125px; 
+  height: 25px;
+  border: none;
+  padding: 0;
+  background: none;
+}
