@@ -1,26 +1,94 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DumbPhysics</title>
-    <script src="./Script.js" type="module" defer></script>
-    <link href="./style.css" rel="stylesheet">
-  </head>
-  <body>
-    <h1>DumbPhysics</h1>
-    <div id="rendering">
-      <div id="canvasDiv">
-        <canvas id="canvas"></canvas>
-      </div>
-      <div id="timeControls">
-        <button id="playpause">⏵</button>
-        <p id="speedLabel">Ticks/Frame: </p>
-        <input id="speedInput", type="text" value="1.00">
-        <input id="speedSlider" type="range" min="-1" max="1" value="0" step="0.001">
-      </div>
+    <title>DumbPhysics Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">  
+        <!-- Simulation Canvas -->
+        <div id="canvasDiv" class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <!-- Beautiful Sidebar UI -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>DumbPhysics</h2>
+                <p>2D Mechanics Simulator</p>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="sidebar-section">
+                <h3>Controls</h3>
+                <div class="controls-grid">
+                    <button id="playpause" class="control-button">⏵</button>
+                    <input type="range" min="-1" max="1" value="-0.5" step="0.01" class="slider" id="speedSlider">
+                    <input type="number" id="speedInput" class="speed-input" value="0.37" step="0.1">
+                </div>
+            </div>
+
+            <!-- Global Physics Settings -->
+            <div class="sidebar-section">
+                <h3>Global Physics</h3>
+                <div class="settings-grid">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="gravity">
+                        <label for="gravity">Gravity</label>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="attraction" checked>
+                        <label for="attraction">Attraction</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add New Item Form -->
+            <div class="sidebar-section">
+                <details open>
+                    <summary>
+                        <h3>Add New Object</h3>
+                    </summary>
+                    <div id="newItemForm" class="form-grid">
+                        <!-- Position -->
+                        <label>Position (x, y)</label>
+                        <div class="vector-inputs">
+                            <input type="number" id="newItemPosX" value="50">
+                            <input type="number" id="newItemPosY" value="50">
+                        </div>
+                        <!-- Velocity -->
+                        <label>Velocity (x, y)</label>
+                        <div class="vector-inputs">
+                            <input type="number" id="newItemVelX" value="10">
+                            <input type="number" id="newItemVelY" value="0">
+                        </div>
+                        <!-- Mass -->
+                        <label for="newItemMass">Mass</label>
+                        <input type="number" id="newItemMass" value="10">
+                        <!-- Radius -->
+                        <label for="newItemRadius">Radius</label>
+                        <input type="number" id="newItemRadius" value="5">
+                        <!-- Color -->
+                        <label for="newItemColor">Color</label>
+                        <input type="color" id="newItemColor" value="#FFFFFF" class="color-input">
+                        
+                        <button id="addItemButton" class="add-button">Add to Simulation</button>
+                    </div>
+                </details>
+            </div>
+            
+            <!-- List of Items in Simulation -->
+            <div class="sidebar-section items-section">
+                <h3>Objects</h3>
+                <div id="itemsDiv" class="items-container">
+                    <!-- SidebarElement instances will be appended here by UIHandler.ts -->
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="sidebar">
-    </div>
-  </body>
+
+    <script type="module" src="./Script.js"></script>
+</body>
 </html>
