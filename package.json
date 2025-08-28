@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy-static": "copyfiles -u 1 public/**/* dist",
-    "build": "npm run clean && tsc && npm run copy-static"
+    "build": "npm run clean && tsc && npm run copy-static",
+    "build-dev": "npm run clean && tsc && npm run copy-static && npx live-server dist"
   },
   "repository": {
     "type": "git",
