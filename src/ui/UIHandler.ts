@@ -66,7 +66,6 @@ export class UIHandler {
   private setupUIListeners(): void {
     // --- Simulation Controls ---
     this.speedInput.addEventListener("focusout", this.textFieldChange);
-    this.speedSlider.addEventListener("input", this.speedChange);
     this.playPauseButton.addEventListener("click", this.togglePlay);
 
     // --- New Item Button ---
