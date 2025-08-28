@@ -15,8 +15,7 @@ export class UIHandler {
   engineRepetitions: number;
   queuedRepetitions: number;
 
-  // UI Elements (now selected from HTML, not created)
-  private speedSlider: HTMLInputElement;
+  // UI Elements
   private speedInput: HTMLInputElement;
   private playPauseButton: HTMLButtonElement;
   private itemsDiv: HTMLDivElement;
@@ -36,13 +35,12 @@ export class UIHandler {
     this.engine = engine;
     this.renderer = renderer;
     this.eventHandler = eventHandler;
-    this.playing = false;
+    this.playing = true;
     this.engineRepetitions = 1;
     this.queuedRepetitions = 1;
 
     // --- Select UI elements from the DOM ---
     this.speedInput = document.getElementById("speedInput")! as HTMLInputElement;
-    this.speedSlider = document.getElementById("speedSlider")! as HTMLInputElement;
     this.playPauseButton = document.getElementById("playpause")! as HTMLButtonElement;
     this.itemsDiv = document.getElementById("itemsDiv")! as HTMLDivElement;
 
@@ -154,11 +152,6 @@ export class UIHandler {
     }
   }
 
-  speedChange = (evt: Event) => {
-    this.engineRepetitions = this.getSpeed(Number(this.speedSlider.value));
-    this.speedInput.value = this.engineRepetitions.toFixed(2);
-  }
-
   textFieldChange = (evt: FocusEvent) => {
     let value = Number.parseFloat(this.speedInput.value);
     if (isNaN(value)) {
@@ -166,7 +159,6 @@ export class UIHandler {
     } else {
       this.engineRepetitions = value;
       this.speedInput.value = this.engineRepetitions.toFixed(2);
-      this.speedSlider.value = this.getSpeedInverse(value).toString();
     }
   }
 
