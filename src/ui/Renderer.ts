@@ -46,7 +46,7 @@ export class Renderer {
   }
 
   private drawBoundary() {
-    this.ctx.strokeStyle = "black"
+    this.ctx.strokeStyle = "white"
     let origin = this.translateToCanvasCoordinates(createVector(0, this.engine.boxHeight))
     let width = this.engine.boxWidth * this.scale
     let height = this.engine.boxHeight * this.scale
