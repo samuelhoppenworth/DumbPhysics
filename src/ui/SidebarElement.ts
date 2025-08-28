@@ -31,14 +31,10 @@ export class SidebarElement {
 
     let item = this.engine.getItem(this.index);
 
-    // --- Main Card Container ---
     this.cardDiv = document.createElement("div");
     this.cardDiv.className = "item-card";
-
-    // --- Card Header ---
     const header = document.createElement("div");
     header.className = "item-card-header";
-
     this.thumbnail = document.createElement("canvas");
     this.thumbnail.width = this.thumbnailWidth;
     this.thumbnail.height = this.thumbnailWidth;
@@ -48,7 +44,6 @@ export class SidebarElement {
     const controlsContainer = document.createElement("div");
     controlsContainer.className = "item-controls";
 
-    // Color Input
     if (item instanceof Ball || item instanceof RigidBody) {
       this.colorInput = document.createElement("input");
       this.colorInput.type = "color";
@@ -79,76 +74,19 @@ export class SidebarElement {
     header.appendChild(this.deleteButton);
     this.cardDiv.appendChild(header);
 
-    // --- Card Body (Form Grid) ---
     const body = document.createElement("div");
     body.className = "form-grid";
     
-    this.massInput = this.makeScalarInput(body, "Mass", "mass");
+    this.massInput = this.handler.makeScalarInput(body, "Mass", "mass", this.index);
     if (item instanceof Ball) {
-      this.radiusInput = this.makeScalarInput(body, "Radius", "radius");
+      this.radiusInput = this.handler.makeScalarInput(body, "Radius", "radius", this.index);
     }
 
-    [this.positionInputX, this.positionInputY] = this.makeVectorInput(body, "Position", "position");
-    [this.velocityInputX, this.velocityInputY] = this.makeVectorInput(body, "Velocity", "velocity");
+    [this.positionInputX, this.positionInputY] = this.handler.makeVectorInput(body, "Position", "position", this.index);
+    [this.velocityInputX, this.velocityInputY] = this.handler.makeVectorInput(body, "Velocity", "velocity", this.index);
 
     this.cardDiv.appendChild(body);
     this.parent.appendChild(this.cardDiv);
-  }
-
-  private makeScalarInput(container: HTMLElement, labelText: string, property: string): HTMLInputElement {
-    const item = this.engine.getItem(this.index);
-    
-    const label = document.createElement("label");
-    label.innerText = labelText;
-    
-    const input = document.createElement("input");
-    input.type = "number";
-    const value = (item as any)[property] ?? item.minRadius;
-    input.placeholder = value.toFixed(2);
-    input.oninput = () => eventBus.dispatch('itemPropertyChanged', {
-      itemIndex: this.index,
-      property: property,
-      newValue: input.value
-    });
-    
-    container.appendChild(label);
-    container.appendChild(input);
-    return input;
-  }
-
-  private makeVectorInput(container: HTMLElement, labelText: string, property: string): [HTMLInputElement, HTMLInputElement] {
-    const item = this.engine.getItem(this.index);
-    
-    const label = document.createElement("label");
-    label.innerText = `${labelText} (x, y)`;
-    
-    const inputsWrapper = document.createElement("div");
-    inputsWrapper.className = "vector-inputs";
-    
-    const inputX = document.createElement("input");
-    inputX.type = "number";
-    inputX.placeholder = (item as any)[property].x.toFixed(2);
-    inputX.oninput = () => eventBus.dispatch('itemPropertyChanged', {
-      itemIndex: this.index,
-      property: `${property}X`,
-      newValue: inputX.value
-    });
-
-    const inputY = document.createElement("input");
-    inputY.type = "number";
-    inputY.placeholder = (item as any)[property].y.toFixed(2);
-    inputY.oninput = () => eventBus.dispatch('itemPropertyChanged', {
-      itemIndex: this.index,
-      property: `${property}Y`,
-      newValue: inputY.value
-    });
-    
-    inputsWrapper.appendChild(inputX);
-    inputsWrapper.appendChild(inputY);
-    container.appendChild(label);
-    container.appendChild(inputsWrapper);
-    
-    return [inputX, inputY];
   }
 
   drawThumbnail(item: Item & Collidable) {
@@ -160,14 +98,13 @@ export class SidebarElement {
 
   update() {
     let item = this.engine.getItem(this.index);
-    if (!item) return; // Item might have been removed
+    if (!item) return;
 
-    if (item instanceof Ball) {
-      this.radiusInput.placeholder = item.minRadius.toFixed(2);
+    if (document.activeElement !== this.massInput) this.massInput.value = item.mass.toFixed(2);
+    if (item instanceof Ball && document.activeElement !== this.radiusInput) {
+      this.radiusInput.value = item.minRadius.toFixed(2);
     }
-    this.massInput.placeholder = item.mass.toFixed(2);
     
-    // Only update placeholders if the user isn't focused on the input
     if (document.activeElement !== this.positionInputX) this.positionInputX.value = item.position.x.toFixed(2);
     if (document.activeElement !== this.positionInputY) this.positionInputY.value = item.position.y.toFixed(2);
     if (document.activeElement !== this.velocityInputX) this.velocityInputX.value = item.velocity.x.toFixed(2);
