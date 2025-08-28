@@ -2,6 +2,7 @@ import { Renderer } from "./Renderer.js";
 import { Item } from "../simulator/Items.js";
 import { SimulatorEngine } from "../simulator/SimulatorEngine.js";
 import { Vector, add, createVector, scale, sub } from "../simulator/Vector.js";
+import { eventBus } from "../core/EventBus.js";
 
 export class EventHandler {
   private renderer: Renderer
@@ -10,6 +11,7 @@ export class EventHandler {
   private rendererStartOffset: Vector | null = null;
   private selectedItem: Item | null = null;
   private canvas: HTMLCanvasElement
+  private isPanning: boolean = false;
 
   constructor(document: Document, renderer: Renderer, engine: SimulatorEngine, canvas: HTMLCanvasElement) {
     this.renderer = renderer
@@ -24,23 +26,47 @@ export class EventHandler {
 
   mouseDown = (event: MouseEvent) => {
     let mousePosition = createVector(event.x, event.y)
-    this.mouseMoveStart = mousePosition
-    this.rendererStartOffset = createVector(this.renderer.originOffset.x, this.renderer.originOffset.y)
+    let canvasPosition = this.getCanvasPosition(mousePosition)
+    let canvasPositionMeters = this.renderer.translateFromCanvasCoordinates(canvasPosition)
+
+    let itemClicked = false;
+    for (const item of this.engine.getItems()) {
+        if (item.containsPoint(canvasPositionMeters)) {
+            const itemIndex = this.engine.getItems().indexOf(item);
+            eventBus.dispatch('itemSelected', { index: itemIndex });
+            itemClicked = true;
+            this.selectedItem = item; 
+            break; 
+        }
+    }
+
+    if (!itemClicked) {
+      this.mouseMoveStart = mousePosition
+      this.rendererStartOffset = createVector(this.renderer.originOffset.x, this.renderer.originOffset.y)
+      this.isPanning = true;
+      eventBus.dispatch('itemDeselected');
+      this.selectedItem = null;
+    }
   }
 
   mouseUp = (event: MouseEvent) => {
     this.mouseMoveStart = null
     this.rendererStartOffset = null
+    this.isPanning = false;
   }
 
   mouseMove = (event: MouseEvent) => {
     let mousePosition = createVector(event.clientX, event.clientY)
     let canvasPosition = this.getCanvasPosition(mousePosition)
     let canvasPositionMeters = this.renderer.translateFromCanvasCoordinates(canvasPosition)
+    
+    let currentlySelectedItem = this.selectedItem;
+
     for (let item of this.engine.getItems()) {
       item.selected = item.containsPoint(canvasPositionMeters)
     }
-    if (this.mouseMoveStart == null || this.rendererStartOffset == null) return
+
+    if (this.mouseMoveStart == null || this.rendererStartOffset == null || !this.isPanning) return
     let pixelOffset = sub(mousePosition, this.mouseMoveStart)
     pixelOffset.x *= -1;
     let meterOffset = scale(pixelOffset, 1/this.renderer.scale)

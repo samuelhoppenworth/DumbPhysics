@@ -131,6 +131,9 @@ input[type="number"]:focus {
 details > summary {
     list-style: none;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 details > summary::-webkit-details-marker {
     display: none;
@@ -139,6 +142,10 @@ details > summary h3 {
     display: inline-block;
     margin: 0;
 }
+.collapse-indicator {
+    font-size: 0.8rem;
+}
+
 
 /* --- Control Styles --- */
 .controls-grid {
@@ -237,7 +244,10 @@ input[type="range"]::-webkit-slider-thumb {
 .add-button:hover { background-color: var(--accent-hover); }
 
 /* --- Item List Styles --- */
-.items-section { flex-grow: 1; display: flex; flex-direction: column; }
+.items-section {
+    display: flex;
+    flex-direction: column;
+}
 .items-container {
     overflow-y: auto;
     flex-grow: 1;
@@ -286,4 +296,13 @@ input[type="range"]::-webkit-slider-thumb {
 
 .item-card .form-grid {
     grid-template-columns: 80px 1fr; /* Custom grid for cards */
+}
+
+.placeholder-text {
+    grid-column: 1 / -1; /* Span full width */
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 10px 0;
 }

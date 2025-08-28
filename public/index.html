@@ -22,16 +22,16 @@
 
             <!-- Simulation Controls -->
             <div class="sidebar-section">
-                <h3>Tick speed</h3>
+                <h3>Ticks/frame</h3>
                 <div class="controls-grid">
                     <button id="playpause" class="control-button">⏵</button>
-                    <input type="number" id="speedInput" class="speed-input" value="0.37" step="0.1">
+                    <input type="number" id="speedInput" class="speed-input" value="1.00" step="0.1">
                 </div>
             </div>
 
             <!-- Global Physics Settings -->
             <div class="sidebar-section">
-                <h3>Global Physics</h3>
+                <h3>Global Settings</h3>
                 <div class="settings-grid">
                     <div class="checkbox-wrapper">
                         <input type="checkbox" id="gravity">
@@ -46,9 +46,10 @@
 
             <!-- Add New Item Form -->
             <div class="sidebar-section">
-                <details open>
+                <details>
                     <summary>
                         <h3>Add New Object</h3>
+                        <span class="collapse-indicator">▼</span>
                     </summary>
                     <div id="newItemForm" class="form-grid">
                         <!-- Position -->
@@ -78,12 +79,30 @@
                 </details>
             </div>
             
-            <!-- List of Items in Simulation -->
+            <!-- Selected Object Section -->
+            <div class="sidebar-section">
+                <details>
+                    <summary>
+                        <h3>Selected Object</h3>
+                        <span class="collapse-indicator">▲</span>
+                    </summary>
+                    <div id="selectedObjectContent" class="form-grid">
+                        <p class="placeholder-text">Click an object in the simulation to see its properties.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- List of All Items in Simulation -->
             <div class="sidebar-section items-section">
-                <h3>Objects</h3>
-                <div id="itemsDiv" class="items-container">
-                    <!-- SidebarElement instances will be appended here by UIHandler.ts -->
-                </div>
+                <details>
+                    <summary>
+                        <h3>All Objects</h3>
+                        <span class="collapse-indicator">▼</span>
+                    </summary>
+                    <div id="itemsDiv" class="items-container">
+                        <!-- SidebarElement instances will be appended here by UIHandler.ts -->
+                    </div>
+                </details>
             </div>
         </div>
     </div>
